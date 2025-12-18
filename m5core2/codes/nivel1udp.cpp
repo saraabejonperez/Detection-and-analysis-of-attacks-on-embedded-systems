@@ -3,8 +3,8 @@
 #include <WiFiUdp.h>
 
 /* ========= CONFIGURACIÓN WIFI ========= */
-const char* WIFI_SSID = "MotoG(4)9983";
-const char* WIFI_PASS = "162a63f763c0";
+const char* WIFI_SSID = "WiFi";
+const char* WIFI_PASS = "contraseña";
 
 /* ========= CONFIGURACIÓN UDP ========= */
 const int UDP_PORT = 9999;
