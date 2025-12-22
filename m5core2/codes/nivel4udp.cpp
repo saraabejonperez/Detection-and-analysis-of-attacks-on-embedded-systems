@@ -4,16 +4,17 @@
 #include <vector>
 
 /* ========= CONFIG WIFI ========= */
-const char* WIFI_SSID = "MotoG(4)9983";
-const char* WIFI_PASS = "162a63f763c0";
+const char* WIFI_SSID = "WiFi";
+const char* WIFI_PASS = "contraseña";
 
 /* ========= CONFIG UDP ========= */
 WiFiUDP udp;
 const uint16_t UDP_PORT = 9999;
 
-/* ========= ESTADOS ========= */
-enum State { IDLE, CAPTURING, SHOW_STATS };
-State state = IDLE;
+/* ========= VARIABLES DE LA VENTANA ========= */
+unsigned long windowStart;
+bool showingStats = false;
+unsigned long statsShowStart;
 
 /* ========= ESTADÍSTICAS ========= */
 uint32_t totalFlows = 0;
@@ -48,19 +49,6 @@ void resetStats() {
   dstIPs.clear();
 }
 
-/* ========= PANTALLA EN ESTADO DE REPOSO ========= */
-void showIdleScreen() {
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setCursor(0, 0);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setTextColor(WHITE);
-
-  M5.Lcd.println("MODO REPOSO");
-  M5.Lcd.println("");
-  M5.Lcd.println("A: Capturar");
-  M5.Lcd.println("C: Stats");
-}
-
 /* ========= MOSTRAR ESTADÍSTICAS ========= */
 void showStats() {
   M5.Lcd.fillScreen(BLACK);
@@ -68,7 +56,7 @@ void showStats() {
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(CYAN);
 
-  M5.Lcd.println("== ESTADISTICAS ==");
+  M5.Lcd.println("== STATS 60s ==");
   M5.Lcd.println("Flows: " + String(totalFlows));
   M5.Lcd.println("TCP: " + String(tcpFlows));
   M5.Lcd.println("UDP: " + String(udpFlows));
@@ -81,9 +69,10 @@ void showStats() {
 /* ========= SETUP ========= */
 void setup() {
   M5.begin();
+  M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setTextSize(2);
 
-  M5.Lcd.println("Flow Monitor v4.2");
+  M5.Lcd.println("Flow Monitor v4");
   M5.Lcd.println("Conectando WiFi");
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);
@@ -96,44 +85,33 @@ void setup() {
   udp.begin(UDP_PORT);
   M5.Lcd.println("UDP " + String(UDP_PORT));
 
-  delay(2000);
-
-  showIdleScreen();
+  windowStart = millis();
 }
 
 /* ========= LOOP ========= */
 void loop() {
-  M5.update();
+  unsigned long now = millis();
 
-  // ───── BOTON B → REPOSO ─────
-  if (M5.BtnB.wasPressed()) {
-    state = IDLE;
-    showIdleScreen();
+  // Mostrar estadísticas
+  if (showingStats) {
+    if (now - statsShowStart >= 10000) {
+      showingStats = false;
+      resetStats();
+      windowStart = now;
+      M5.Lcd.fillScreen(BLACK);
+    }
     return;
   }
 
-  // ───── BOTON A → INICIAR CAPTURA ─────
-  if (M5.BtnA.wasPressed()) {
-    resetStats();
-    state = CAPTURING;
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(0, 0);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.setTextColor(GREEN);
-    M5.Lcd.println("CAPTURANDO...");
+  // Fin de ventana de 60s
+  if (now - windowStart >= 60000) {
+    showStats();
+    showingStats = true;
+    statsShowStart = now;
+    return;
   }
 
-  // ───── BOTON C → MOSTRAR ESTADISTICAS ─────
-  if (M5.BtnC.wasPressed()) {
-    if (state == CAPTURING || state == SHOW_STATS) {
-      state = SHOW_STATS;
-      showStats();
-    }
-  }
-
-  // ───── SOLO CAPTURAMOS EN ESTE ESTADO ─────
-  if (state != CAPTURING) return;
-
+  // Recepción de flujos
   int size = udp.parsePacket();
   if (!size) return;
 

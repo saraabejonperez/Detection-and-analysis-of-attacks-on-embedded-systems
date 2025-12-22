@@ -2,7 +2,7 @@ import psutil
 import socket
 import time
 
-ESP32_IP = "10.18.127.195"
+ESP32_IP = "10.211.0.195"#"10.18.127.195"
 ESP32_PORT = 9999
 
 udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

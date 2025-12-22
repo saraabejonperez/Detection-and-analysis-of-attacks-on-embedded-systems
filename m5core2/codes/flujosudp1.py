@@ -2,7 +2,7 @@ import psutil
 import socket
 import time
 
-ESP_IP = "10.18.127.195"
+ESP_IP = "10.211.0.195"#"10.18.127.195"
 ESP_PORT = 9999
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -21,8 +21,8 @@ while True:
         if key not in flows:
             flows[key] = {
                 "start": now,
-                "tx": 0,
-                "rx": 0,
+                "tx": 0, # NO SE ACTUALIZA -> flujosudp2.py
+                "rx": 0, # NO SE ACTUALIZA -> flujosudp2.py
                 "pid": c.pid
             }
 
