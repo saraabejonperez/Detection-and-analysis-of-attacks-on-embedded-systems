@@ -4,8 +4,8 @@
 #include <M5Core2.h>
 
 /* ========= CONFIG WIFI ========= */
-const char* WIFI_SSID = "MotoG(4)9983";
-const char* WIFI_PASS = "162a63f763c0";
+const char* WIFI_SSID = "WiFi";
+const char* WIFI_PASS = "contraseña";
 
 WiFiServer server(80);
 
@@ -188,7 +188,6 @@ void loop() {
   char buffer[10];
   snprintf(buffer, sizeof(buffer), "%02lu:%02lu:%02lu", hours, minutes, seconds);
   String timestamp = String(buffer);
-  //String timestamp = doc["timestamp"] | "N/A";
 
   // ───── Detección SYN Flood ─────
   if (protocol == "TCP" && flags.indexOf("SYN") >= 0) {
