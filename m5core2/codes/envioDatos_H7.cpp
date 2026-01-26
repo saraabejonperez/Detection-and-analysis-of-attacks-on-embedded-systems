@@ -32,7 +32,7 @@ void setup() {
     Serial.print(".");
   }
 
-  Serial.println("\n📶 WiFi conectado");
+  Serial.println("\nWiFi conectado");
   randomSeed(millis());
 }
 
