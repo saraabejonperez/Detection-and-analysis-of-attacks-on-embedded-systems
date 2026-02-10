@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from typing import Tuple, Set
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -109,6 +111,41 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> None:
         )
 
 
+def save_preprocessing_artifacts(scaler: StandardScaler, feature_names: pd.Index, output_path: Path) -> None:
+    try:
+        np.save(output_path / 'mean.npy', scaler.mean_)
+        np.save(output_path / 'scale.npy', scaler.scale_)
+        np.save(output_path / 'features.npy', feature_names.to_numpy())
+
+    except Exception as e:
+        raise RuntimeError("Error al guardar los artefactos de preprocesado") from e
+
+
+def plot_confusion_matrix(y_true, y_pred, class_names=('Benign', 'DoS'), normalize=False, save_path=None) -> None:
+    cm = confusion_matrix(y_true, y_pred)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(
+        cm, annot=True,
+        fmt='.2f' if normalize else 'd',
+        cmap='Blues',
+        xticklabels=class_names,
+        yticklabels=class_names
+    )
+    plt.xlabel('Predicted label')
+    plt.ylabel('True label')
+    plt.title('Confusion Matrix')
+    plt.tight_layout()
+
+    if save_path is not None:
+        plt.savefig(save_path, dpi=300)
+    
+    plt.show()
+
+
 def main() -> None:
     excluded_cols = load_excluded_columns(PATH_DATA / 'columns_no_gen.txt')
 
@@ -130,9 +167,13 @@ def main() -> None:
 
     X_train, y_train = balance_dataset(X_train, y_train)
 
+    feature_names = X_train.columns
+
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
+
+    save_preprocessing_artifacts(scaler=scaler, feature_names=feature_names, output_path=PATH_MODEL)
 
     train_with_cross_validation(X_train, y_train)
 
@@ -145,6 +186,9 @@ def main() -> None:
     )
 
     y_pred = (final_model.predict(X_test) > 0.5).astype(int)
+
+    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), save_path=PATH_MODEL / 'confusion_matrix.png')
+    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), normalize=True, save_path=PATH_MODEL / 'confusion_matrix_normalized.png')
 
     print(confusion_matrix(y_test, y_pred))
     print(classification_report(y_test, y_pred))
