@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from typing import Tuple, Set
+from typing import Iterable, Optional, Set, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -38,15 +38,42 @@ EPOCHS_FT = 20
 # =  MÉTODOS  = #
 # ============= #
 def load_excluded_columns(path: Path) -> Set[str]:
+    """
+    Load the set of feature names that must be excluded from the training process.
+    
+    The file is expected to contain one feature name per line. These features 
+    are typically removed because they do not generalize well or are not 
+    available during inference.
+
+    :param path: Path to the text file containing the feature names to exclude.
+    :type path: Path
+    :return: Set of feature names to be excluded from the dataset.
+    :rtype: Set[str]
+    :raises FileNotFoundError: If the specified file does not exist.
+    """
     try:
         with open(path, 'r', encoding='utf-8') as f:
             return {line.strip() for line in f if line.strip()}
-
+  
     except FileNotFoundError as e:
         raise FileNotFoundError(f"No se encontró el archivo {path}") from e
 
 
 def load_csv_folder(folder: Path, usecols) -> pd.DataFrame:
+    """
+    Load and concatenate all CSV files contained in a directory.
+
+    The function recursively searches for CSV files inside the given folder,
+    loads them into pandas DataFrames, and concatenates them into a single
+    DataFrame.
+    
+    :param folder: Directory containing the CSV files.
+    :type folder: Path
+    :param usecols: Function used to filter which columns are loaded.
+    :return: Concatenated DataFrame containing all loaded CSV data.
+    :rtype: pd.DataFrame
+    :raises ValueError: If no CSV files are found in the specified directory.
+    """
     csv_files = list(folder.rglob('*.csv'))
 
     if not csv_files:
@@ -58,6 +85,19 @@ def load_csv_folder(folder: Path, usecols) -> pd.DataFrame:
 
 
 def preprocess_dataframe(df: pd.DataFrame, excluded_cols: Set[str]) -> pd.DataFrame:
+    """
+    Perform preprocessing and basic cleaning of the dataset.
+
+    This function removes excluded features, drops rows and columns containing
+    only missing values, and shuffles the dataset to randomize the sample order.
+    
+    :param df: Input DataFrame containing raw network traffic data.
+    :type df: pd.DataFrame
+    :param excluded_cols: Set of feature names to be removed.
+    :type excluded_cols: Set[str]
+    :return: Cleaned and shuffled DataFrame.
+    :rtype: DataFrame
+    """
     df = df.drop(columns=excluded_cols, errors='ignore')
 
     df = df.dropna(axis=0, how='all')
@@ -67,6 +107,20 @@ def preprocess_dataframe(df: pd.DataFrame, excluded_cols: Set[str]) -> pd.DataFr
 
 
 def balance_dataset(X: pd.DataFrame, y: pd.Series) -> Tuple[pd.DataFrame, pd.Series]:
+    """
+    Balance the training dataset using random undersampling.
+
+    The function balances the dataset by reducing the number of samples
+    in the majority class so that both classes contain the same number
+    of samples. This operation is applied only to the training set.
+    
+    :param X: Feature matrix of the training set.
+    :type X: pd.DataFrame
+    :param y: Label vector of the training set.
+    :type y: pd.Series
+    :return: Balanced feature matrix and corresponding label vector.
+    :rtype: Tuple[pd.DataFrame, pd.Series]
+    """
     df = pd.concat([X, y], axis=1)
 
     benign = df[df.label == 0]
@@ -84,6 +138,18 @@ def balance_dataset(X: pd.DataFrame, y: pd.Series) -> Tuple[pd.DataFrame, pd.Ser
 
 
 def create_model(input_dim: int) -> tf.keras.Model:
+    """
+    Create and compile a neural network model for binary classification.
+
+    The model consists of two fully connected hidden layers with ReLU activation
+    functions and a sigmoid-activated output layer suitable for binary
+    classification tasks.
+    
+    :param input_dim: Number of input features.
+    :type input_dim: int
+    :return: Compiled Keras model ready for training.
+    :rtype: tf.keras.Model
+    """
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(input_dim,)),
         tf.keras.layers.Dense(32, activation='relu'),
@@ -97,6 +163,18 @@ def create_model(input_dim: int) -> tf.keras.Model:
 
 
 def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> None:
+    """
+    Train the neural network using stratified K-fold cross-validation.
+
+    This function evaluates the stability of the model across multiple
+    stratified splits of the training data. A new model is trained for
+    each fold, but no trained model is returned or stored.
+    
+    :param X: Scaled feature matrix of the training set.
+    :type X: np.ndarray
+    :param y: Label vector corresponding to the training set.
+    :type y: pd.Series
+    """
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(X, y), 1):
@@ -112,6 +190,22 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> None:
 
 
 def save_preprocessing_artifacts(scaler: StandardScaler, feature_names: pd.Index, output_path: Path) -> None:
+    """
+    Save preprocessing parameters required for inference.
+
+    This function stores the mean and scale parameters of the fitted
+    StandardScaler, as well as the ordered list of feature names. These
+    artifacts are required to reproduce the same preprocessing pipeline
+    during inference on an embedded device.
+    
+    :param scaler: Fitted StandardScaler instance.
+    :type scaler: StandardScaler
+    :param feature_names: Ordered list of feature names used during training.
+    :type feature_names: pd.Index
+    :param output_path: Directory where the preprocessing artifacts are saved.
+    :type output_path: Path
+    :raises RuntimeError: If an error occurs while saving the artifacts.
+    """
     try:
         np.save(output_path / 'mean.npy', scaler.mean_)
         np.save(output_path / 'scale.npy', scaler.scale_)
@@ -121,7 +215,22 @@ def save_preprocessing_artifacts(scaler: StandardScaler, feature_names: pd.Index
         raise RuntimeError("Error al guardar los artefactos de preprocesado") from e
 
 
-def plot_confusion_matrix(y_true, y_pred, class_names=('Benign', 'DoS'), normalize=False, save_path=None) -> None:
+def plot_confusion_matrix(y_true: Iterable[int], y_pred: Iterable[int], 
+                          class_names: Tuple[str, str]=('Benign', 'DoS'), 
+                          normalize: bool=False, save_path: Optional[Path]=None) -> None:
+    """
+    Plot and optionally save the confusion matrix as a heatmap.
+
+    The confusion matrix can be displayed using absolute values or
+    normalized per class. The generated figure can also be saved
+    to disk for reporting and documentation purposes.
+    
+    :param y_true: Ground truth labels.
+    :param y_pred: Predicted labels produced by the model.
+    :param class_names: Names of the classes displayed on the axes.
+    :param normalize: Whether to normalize the confusion matrix by true labels.
+    :param save_path: Path to save the generated figure. If None, the figure is not saved.
+    """
     cm = confusion_matrix(y_true, y_pred)
 
     if normalize:
@@ -147,9 +256,29 @@ def plot_confusion_matrix(y_true, y_pred, class_names=('Benign', 'DoS'), normali
 
 
 def main() -> None:
+    """
+    Execute the complete training and evaluation pipeline.
+
+    This function loads and preprocesses the dataset, splits the data
+    into training and test sets, balances and scales the training data,
+    trains and evaluates the neural network model, generates evaluation
+    metrics and confusion matrices, and finally exports the trained model
+    in TensorFlow Lite format.
+    """
     excluded_cols = load_excluded_columns(PATH_DATA / 'columns_no_gen.txt')
 
     def keep_column(col: str) -> bool:
+        """
+        Determine whether a column should be included in the dataset.
+        
+        This helper function is used to filter out features that are listed 
+        as non-generalizable or not available during inference.
+        
+        :param col: Name of the column to evaluate.
+        :type col: str
+        :return: True if the column should be kept, False otherwise.
+        :rtype: bool
+        """
         return col not in excluded_cols
     
     benign_df = load_csv_folder(PATH_BENIGN, keep_column)
