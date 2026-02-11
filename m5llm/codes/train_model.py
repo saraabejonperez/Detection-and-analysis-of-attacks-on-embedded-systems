@@ -8,7 +8,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import resample
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, roc_auc_score
 
 import tensorflow as tf
 
@@ -162,7 +162,7 @@ def create_model(input_dim: int) -> tf.keras.Model:
     return model
 
 
-def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> None:
+def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> pd.DataFrame:
     """
     Train the neural network using stratified K-fold cross-validation.
 
@@ -174,19 +174,47 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> None:
     :type X: np.ndarray
     :param y: Label vector corresponding to the training set.
     :type y: pd.Series
+    :return DataFrame of results
+    :rtype pd.DataFrame
     """
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
 
+    metrics = []
+    
     for fold, (train_idx, val_idx) in enumerate(skf.split(X, y), 1):
-        model = create_model(X.shape[1])
+        X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
+        y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
+
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_val = scaler.transform(X_val)
+        
+        model = create_model(X_train.shape[1])
 
         model.fit(
-            X[train_idx], y.iloc[train_idx],
-            validation_data=(X[val_idx], y.iloc[val_idx]),
+            X_train, y_train,
             epochs=EPOCHS_CV,
             batch_size=BATCH_SIZE,
             verbose=0
         )
+
+        y_pred = (model.predict(X_val) > 0.5).astype(int)
+
+        metrics.append({
+            "fold": fold,
+            "accuracy": accuracy_score(y_val, y_pred),
+            "f1": f1_score(y_val, y_pred),
+            "auc": roc_auc_score(y_val, y_pred)
+        })
+
+    results = pd.DataFrame(metrics)
+
+    print("\n--- Cross-validation results ---")
+    print(results)
+    print("\n--- Mean ± Std ---")
+    print(results.drop(columns="fold").agg(["mean", "std"]))
+
+    return results
 
 
 def save_preprocessing_artifacts(scaler: StandardScaler, feature_names: pd.Index, output_path: Path) -> None:
@@ -296,6 +324,8 @@ def main() -> None:
 
     X_train, y_train = balance_dataset(X_train, y_train)
 
+    train_with_cross_validation(X_train, y_train)
+
     feature_names = X_train.columns
 
     scaler = StandardScaler()
@@ -303,8 +333,6 @@ def main() -> None:
     X_test = scaler.transform(X_test)
 
     save_preprocessing_artifacts(scaler=scaler, feature_names=feature_names, output_path=PATH_MODEL)
-
-    train_with_cross_validation(X_train, y_train)
 
     final_model = create_model(X_train.shape[1])
     final_model.fit(
@@ -319,7 +347,13 @@ def main() -> None:
     plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), save_path=PATH_MODEL / 'confusion_matrix.png')
     plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), normalize=True, save_path=PATH_MODEL / 'confusion_matrix_normalized.png')
 
-    print(confusion_matrix(y_test, y_pred))
+    cm = confusion_matrix(y_test, y_pred)
+    tn, fp, fn, tp = cm.ravel().tolist()
+    print(cm)
+    print(f"\t{tp} True Positives")
+    print(f"\t{tn} True Negatives")
+    print(f"\t{fp} False Positives")
+    print(f"\t{fn} False Negatives")
     print(classification_report(y_test, y_pred))
 
     converter = tf.lite.TFLiteConverter.from_keras_model(final_model)
