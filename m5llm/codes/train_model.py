@@ -174,7 +174,7 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> pd.DataFrame:
     :type X: np.ndarray
     :param y: Label vector corresponding to the training set.
     :type y: pd.Series
-    :return DataFrame of results
+    :return: DataFrame of results
     :rtype pd.DataFrame
     """
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
@@ -310,7 +310,6 @@ def main() -> None:
         return col not in excluded_cols
     
     benign_df = load_csv_folder(PATH_BENIGN, keep_column)
-    benign_df['label'] = 0
 
     attack_df = load_csv_folder(PATH_DOS, keep_column)
 
