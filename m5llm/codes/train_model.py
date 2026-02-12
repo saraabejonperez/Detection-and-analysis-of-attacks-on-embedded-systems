@@ -30,8 +30,8 @@ PATH_MODEL.mkdir(exist_ok=True)
 RANDOM_STATE = 42
 N_SPLITS = 5
 BATCH_SIZE = 256
-EPOCHS_CV = 15
-EPOCHS_FT = 20
+EPOCHS_CV = 30
+EPOCHS_FT = 50
 
 
 # ============= #
@@ -167,14 +167,13 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> pd.DataFrame:
     Train the neural network using stratified K-fold cross-validation.
 
     This function evaluates the stability of the model across multiple
-    stratified splits of the training data. A new model is trained for
-    each fold, but no trained model is returned or stored.
+    stratified splits of the training data.
     
     :param X: Scaled feature matrix of the training set.
     :type X: np.ndarray
     :param y: Label vector corresponding to the training set.
     :type y: pd.Series
-    :return: DataFrame of results
+    :return: Metrics for the evaluation of each fold
     :rtype pd.DataFrame
     """
     skf = StratifiedKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
@@ -191,11 +190,15 @@ def train_with_cross_validation(X: np.ndarray, y: pd.Series) -> pd.DataFrame:
         
         model = create_model(X_train.shape[1])
 
+        early_stop = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+
         model.fit(
             X_train, y_train,
+            validation_data=(X_val, y_val),
             epochs=EPOCHS_CV,
             batch_size=BATCH_SIZE,
-            verbose=0
+            verbose=0,
+            callbacks=[early_stop]
         )
 
         y_pred = (model.predict(X_val) > 0.5).astype(int)
@@ -334,11 +337,16 @@ def main() -> None:
     save_preprocessing_artifacts(scaler=scaler, feature_names=feature_names, output_path=PATH_MODEL)
 
     final_model = create_model(X_train.shape[1])
+
+    early_stop = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=8, restore_best_weights=True)
+
     final_model.fit(
         X_train, y_train,
         epochs=EPOCHS_FT,
+        batch_size=BATCH_SIZE,
         validation_split=0.1,
-        verbose=1
+        verbose=1,
+        callbacks=[early_stop]
     )
 
     y_pred = (final_model.predict(X_test) > 0.5).astype(int)
@@ -348,6 +356,7 @@ def main() -> None:
 
     cm = confusion_matrix(y_test, y_pred)
     tn, fp, fn, tp = cm.ravel().tolist()
+    print('\n--- RESULTADOS EVALUACIÓN ---')
     print(cm)
     print(f"\t{tp} True Positives")
     print(f"\t{tn} True Negatives")
