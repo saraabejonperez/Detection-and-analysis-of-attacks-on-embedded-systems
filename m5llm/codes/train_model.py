@@ -25,7 +25,7 @@ PATH_MODEL.mkdir(exist_ok=True)
 
 
 # ================ #
-# =  CONSTANTES  = #
+# =  PARAMETERS  = #
 # ================ #
 RANDOM_STATE = 42
 N_SPLITS = 5
@@ -34,9 +34,9 @@ EPOCHS_CV = 30
 EPOCHS_FT = 50
 
 
-# ============= #
-# =  MÉTODOS  = #
-# ============= #
+# =============== #
+# =  FUNCTIONS  = #
+# =============== #
 def load_excluded_columns(path: Path) -> Set[str]:
     """
     Load the set of feature names that must be excluded from the training process.
