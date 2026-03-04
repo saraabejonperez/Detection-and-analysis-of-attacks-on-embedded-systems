@@ -174,3 +174,22 @@ All errors follow this format:
   "code": code_number
 }
 ```
+
+### State Diagram (Logical Behavior)
+Detection states:
+
+IDLE → MODEL_LOADED → DETECTING → STOPPED → IDLE
+
+<img width="2288" height="1528" alt="image" src="https://github.com/user-attachments/assets/a5ab8e84-ccc5-41c2-bd68-4d00d5f73fa7" />
+
+
+Rules:
+- Cannot start detection without model
+- Cannot load model while detecting
+- Cannot stop if not running
+
+### Security Considerations
+- Validate file extension before loading model
+- Limit model size
+- Validate feature vector length
+- API token validation
