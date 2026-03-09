@@ -41,7 +41,7 @@ Uploads a new .tflite model to the device.
 ```
 {
   "message": "Model loaded successfully",
-  "model_name": <model_name>
+  "model_name": <model_name>,
   "input_shape": <model_shape>,
   "loaded_at": <timestamp>
 }
@@ -180,7 +180,7 @@ Detection states:
 
 IDLE → MODEL_LOADED → DETECTING → STOPPED → IDLE
 
-<img width="2288" height="1528" alt="image" src="https://github.com/user-attachments/assets/a5ab8e84-ccc5-41c2-bd68-4d00d5f73fa7" />
+<img width="2288" height="1528" alt="image" src="https://github.com/user-attachments/assets/3331f30f-f666-4446-955b-ab9f02979c42" />
 
 
 Rules:
