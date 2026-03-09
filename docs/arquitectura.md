@@ -8,7 +8,7 @@ The system is composed of two main components:
 Both components communicate via REST API over a local network.
 
 ## Scheme
-<img width="3444" height="888" alt="image" src="https://github.com/user-attachments/assets/3e39ceea-8cda-426e-88ff-79f065328aff" />
+<img width="3444" height="888" alt="image" src="https://github.com/user-attachments/assets/668d9543-798b-4a52-8c39-2522546bb010" />
 
 
 ## Component Responsibilities
