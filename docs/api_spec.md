@@ -193,3 +193,111 @@ Rules:
 - Limit model size
 - Validate feature vector length
 - API token validation
+
+# Device Management Module Design
+This module is responsible for handling dynamic registration, selection and validation of embedded devices used for real-time detection.  
+It is required because the M5Stack LLM630 Compute Kit operates in a dynamic IP environment (mobile hotspot network), meaning its IP address may change.  
+The Device Management Module should:
+- Allow manual registration of devices
+- Allow selection of active device
+- Validate device connectivity
+- Store device configuration persistently
+- Enable future multi-device support
+- Avoid hardcoded IP addresses
+
+Each device is represented with seven fields:
+- **id**: Unique identifier (UUID)
+- **name**: User-friendly name
+- **ip**: Device IP address
+- **port**: API port
+- **created_at**: Registration date
+- **last_seen**: Last successful health check
+- **status**: ONLINE / OFFLINE / UNKNOWN
+
+Each device has one status:
+- ONLINE → Last health check OK
+- OFFLINE → Health check failed
+- UNKNOWN → Not checked yet
+
+### Endpoints
+- Add device → _POST /devices_
+
+Saves a new device.
+
+**Request**
+```
+{
+  "id": <id_device>,
+  "name": <name_device>,
+  "port": <port>
+}
+```
+
+The system must validate the IP format and de port range, check the connectivity and save the device if it is valid.
+
+**Response 200**
+```
+{
+  "message": "Device saved",
+  "id": <id_device>,
+  "name": <name_device>,
+  "port": <port>,
+  "created_at": <timestamp>,
+  "last_seen": <timestamp>,
+  "status": <status>
+}
+```
+
+**Possible Errors**
+|   CODE   |          TYPE         |
+|----------|:---------------------:|
+|    400   |       Invalid IP      |
+|    409   |    Duplicate device   |
+
+- List devices → _GET /devices_
+
+Returns all devices stored.
+
+**Response 200**
+```
+{
+  [
+    "id": <id_device>,
+    "name": <name_device>,
+    "port": <port>,
+    "created_at": <timestamp>,
+    "last_seen": <timestamp>,
+    "status": <status>
+  ],
+  [...]
+}
+```
+**Possible Errors**
+|   CODE   |          TYPE          |
+|----------|:----------------------:|
+|    400   |    No devices stored   |
+
+- Remove device → _DELETE /devices/<id>_
+
+Deletes entry from storage.
+
+**Response 200**
+```
+{
+  "message": "Device <id_device> deleted"
+}
+```
+
+**Possible Errors**
+|   CODE   |           TYPE          |
+|----------|:-----------------------:|
+|    400   |    Device unreachable   |
+
+- Set active device → _POST /devices/<id>/activate_
+
+Set a saved device to active.
+
+**Possible Errors**
+|   CODE   |           TYPE          |
+|----------|:-----------------------:|
+|    400   |    Device unreachable   |
