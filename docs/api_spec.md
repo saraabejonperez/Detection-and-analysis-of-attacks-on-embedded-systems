@@ -29,13 +29,31 @@ Used to verify device availability and current status.
 |----------|:-----------------:|
 |    500   |   Internal error  |
 
+- Get Model → _GET /model_
+
+Returns the  current model's info.
+
+**Response 200**
+```
+{
+ "model_loaded": true,
+ "model_name": "...",
+ "input_shape": ...
+}
+```
+
+**Possible Errors**
+|   CODE   |            TYPE          |
+|----------|:------------------------:|
+|    400   |     No model uploaded    |
+
 - Load Model → _POST /load_model_  
 
-Uploads a new .tflite model to the device.
+Uploads a new model to the device.
 
 **Request**
   - Content-Type: multipart/form-data
-  - Form field: file → model file (.tflite)
+  - Form field: file → model file
 
 **Response 200**
 ```
@@ -122,13 +140,15 @@ Returns recent detected attack events.
 
 **Response 200**
 ```
-  {
-    "timestamp": <timestamp>,
-    "source_ip": <source_ip>,
-    "destination_ip": <destination_ip>,
-    "attack_type": "DoS",
-    "confidence": <prediction>
-  }
+  "alarms": [
+    {
+      "timestamp": <timestamp>,
+      "source_ip": <source_ip>,
+      "destination_ip": <destination_ip>,
+      "attack_type": "DoS",
+      "confidence": <prediction>
+    }
+  ]
 ```
 
 **Possible Errors**
