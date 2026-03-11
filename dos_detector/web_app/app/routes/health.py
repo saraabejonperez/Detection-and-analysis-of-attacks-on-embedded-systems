@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from datetime import datetime
+import pytz
 
 health_bp = Blueprint("health", __name__)
 
@@ -10,5 +11,5 @@ def health():
         "status": "ok",
         "model_loaded": False,
         "detecting": False,
-        "device_time": datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        "device_time": datetime.now(pytz.timezone('Europe/Madrid')).strftime("%d-%m-%Y %H:%M:%S")
     })
