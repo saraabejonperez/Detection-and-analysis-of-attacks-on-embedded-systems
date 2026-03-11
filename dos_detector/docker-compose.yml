@@ -1,0 +1,15 @@
+services:
+
+  api:
+    build: ./web_app
+    container_name: dos_detector_api
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./web_app:/app
+      - ./web_app/storage/models:/app/storage/models
+      - ./web_app/storage/archived_models:/app/storage/archived_models
+
+    restart: unless-stopped
