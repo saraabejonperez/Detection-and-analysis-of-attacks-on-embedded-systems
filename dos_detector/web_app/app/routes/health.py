@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-import time
+from datetime import datetime
 
 health_bp = Blueprint("health", __name__)
 
@@ -10,5 +10,5 @@ def health():
         "status": "ok",
         "model_loaded": False,
         "detecting": False,
-        "device_time": int(time.time())
+        "device_time": datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     })
