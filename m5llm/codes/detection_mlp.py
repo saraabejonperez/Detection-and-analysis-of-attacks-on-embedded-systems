@@ -138,7 +138,8 @@ def main() -> None:
 
     try:
         for flow in streamer:
-            classify_flow(flow)
+            if flow.dst_ip == "10.180.100.136":
+                classify_flow(flow)
 
     except Exception as e:
         print(f"[ERROR] Error durante la clasificación: {e}")
