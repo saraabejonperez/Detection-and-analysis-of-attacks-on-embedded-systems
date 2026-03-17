@@ -218,7 +218,7 @@ def save_preprocessing_artifacts(feature_names: pd.Index, output_path: Path, mod
     :raises RuntimeError: If an error occurs while saving the artifacts.
     """
     try:
-        np.save(output_path / 'features.npy', feature_names.to_numpy())
+        np.save(output_path / 'features_rf.npy', feature_names.to_numpy())
         joblib.dump(model, output_path / 'dos_classifier_rf.pkl')
     
     except Exception as e:
@@ -274,7 +274,7 @@ def main() -> None:
     trains and evaluates the neural network model, generates evaluation
     metrics and confusion matrices, and finally exports the trained model.
     """
-    excluded_cols = load_excluded_columns(PATH_DATA / 'columns_no_gen.txt')
+    excluded_cols = load_excluded_columns(PATH_DATA / 'columns_no_gen_rf.txt')
     
     def keep_column(col: str) -> bool:
         """
@@ -314,8 +314,8 @@ def main() -> None:
 
     y_pred = final_model.predict(X_test)
 
-    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), save_path=PATH_MODEL / 'confusion_matrix.png')
-    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), normalize=True, save_path=PATH_MODEL / 'confusion_matrix_normalized.png')
+    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), save_path=PATH_MODEL / 'confusion_matrix_rf.png')
+    plot_confusion_matrix(y_test, y_pred, class_names=('Benign', 'DoS'), normalize=True, save_path=PATH_MODEL / 'confusion_matrix_normalized_rf.png')
 
     cm = confusion_matrix(y_test, y_pred)
     tn, fp, fn, tp = cm.ravel().tolist()
