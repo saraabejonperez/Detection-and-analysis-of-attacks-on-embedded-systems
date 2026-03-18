@@ -117,7 +117,7 @@ def main() -> None:
 
     This function initializes the NFStreamer capture engine on the specified
     network interface, enables statistical feature extraction, and continuously
-    processes each generated flow.
+    processes each generated flow if its destination is the devices's IP.
 
     For every captured flow, the system:
         - Extracts statistical traffic features.
