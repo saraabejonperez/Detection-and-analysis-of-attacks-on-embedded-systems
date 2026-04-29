@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 40px auto;">
+    <h2 style="text-align: center;">Iniciar Sesión</h2>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}" style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+            <label for="username" style="font-weight: bold; display: block; margin-bottom: 5px;">Usuario:</label>
+            <input type="text" id="username" name="username" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        
+        <div>
+            <label for="password" style="font-weight: bold; display: block; margin-bottom: 5px;">Contraseña:</label>
+            <input type="password" id="password" name="password" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        
+        <button type="submit" style="padding: 10px; background-color: #3b82f6; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Entrar</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 20px; font-size: 0.9em;">
+        ¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a> o <a href="{{ url_for('main.index') }}">vuelve al inicio</a>.
+    </p>
+</div>
+{% endblock %}

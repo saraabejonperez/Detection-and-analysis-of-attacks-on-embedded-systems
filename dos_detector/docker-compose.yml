@@ -11,5 +11,6 @@ services:
       - ./web_app:/app
       - ./web_app/storage/models:/app/storage/models
       - ./web_app/storage/archived_models:/app/storage/archived_models
+      - ./web_app/storage/db:/app/instance
 
     restart: unless-stopped

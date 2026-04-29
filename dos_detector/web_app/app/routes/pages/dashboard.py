@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
 @dashboard_bp.route("/")
 def dashboard():
-    return render_template("dashboard.html")
+    # Comprobamos cómo ha entrado el usuario para personalizar la vista
+    is_guest = session.get('guest', False)
+    username = session.get('username', 'Invitado')
+    
+    return render_template("dashboard.html", username=username, is_guest=is_guest)

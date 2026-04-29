@@ -1,18 +1,31 @@
+import os
 from flask import Flask
-from flask_cors import CORS
+from .models import db
 
 def create_app():
-
     app = Flask(__name__)
-    CORS(app)
+    
+    # Clave secreta necesaria para las sesiones y los mensajes flash
+    app.secret_key = 'super_secret_key_tfg_change_in_production'
+    
+    # Configuración de la base de datos SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # API routes
-    from .routes.health import health_bp
+    # Inicializar la base de datos con la app
+    db.init_app(app)
 
-    # Pages (frontend)
+    # Crear las tablas si no existen (contexto de la app)
+    with app.app_context():
+        db.create_all()
+
+    # Registrar Blueprints
+    from .routes.pages.main import main_bp
     from .routes.pages.dashboard import dashboard_bp
+    from .routes.auth import auth_bp
 
-    app.register_blueprint(health_bp, url_prefix="/api")
-    app.register_blueprint(dashboard_bp)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
     return app
