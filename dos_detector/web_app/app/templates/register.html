@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 
+{% block body_class %}body-home{% endblock %}
+{% block top_bar %}{% endblock %}
+{% block container_class %}full-screen-container{% endblock %}
+
+{% block flash_messages %}{% endblock %}
+
 {% block content %}
-<div class="card" style="max-width: 400px; margin: 40px auto;">
-    <h2 style="text-align: center;">Crear Cuenta</h2>
+<div class="transparent-card auth-card">
+    <h2>Crear Cuenta</h2>
     
-    <form method="POST" action="{{ url_for('auth.register') }}" style="display: flex; flex-direction: column; gap: 15px;">
-        <div>
-            <label for="username" style="font-weight: bold; display: block; margin-bottom: 5px;">Nuevo Usuario:</label>
-            <input type="text" id="username" name="username" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" style="padding: 10px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+        <div class="form-group">
+            <label for="username">Nuevo Usuario</label>
+            <input type="text" id="username" name="username" required placeholder="Ej: analista_01">
         </div>
         
-        <div>
-            <label for="password" style="font-weight: bold; display: block; margin-bottom: 5px;">Contraseña:</label>
-            <input type="password" id="password" name="password" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres">
         </div>
         
-        <button type="submit" style="padding: 10px; background-color: #10b981; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Registrar</button>
+        <button type="submit" class="btn-home btn-green">Registrar</button>
     </form>
 
-    <p style="text-align: center; margin-top: 20px; font-size: 0.9em;">
-        <a href="{{ url_for('main.index') }}">Volver al inicio</a>
+    <p class="auth-footer">
+        ¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a><br>
+        <a href="{{ url_for('main.index') }}" class="back-link">Volver al inicio</a>
     </p>
 </div>
 {% endblock %}

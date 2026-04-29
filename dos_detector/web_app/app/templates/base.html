@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>DoS Detection System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    </head>
-<body>
+</head>
+<body class="{% block body_class %}{% endblock %}">
 
+{% block top_bar %}
 <header>
     <h1>DoS Detection Dashboard</h1>
     <div style="text-align: center; color: #a1a1aa; margin-top: -10px; padding-bottom: 10px;">
@@ -28,17 +29,21 @@
     <a href="/evaluation">Evaluation</a>
 </nav>
 {% endif %}
+{% endblock %}
 
-<div class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" style="padding: 10px; margin-bottom: 15px; border-radius: 5px;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<div class="{% block container_class %}container{% endblock %}">
+    
+    {% block flash_messages %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    {% endblock %}
 
     {% block content %}{% endblock %}
 </div>

@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="card" style="max-width: 500px; margin: 40px auto; text-align: center;">
-    <h2>Bienvenido al Sistema de Detección DoS On-Edge</h2>
-    <p style="margin-bottom: 30px; color: #4b5563;">
-        Gestión de microcontroladores M5Stack y modelos RandomForest para detección en tiempo real de ataques SYN Flood e ICMP Flood.
-    </p>
+{% block body_class %}body-home{% endblock %}
 
-    <div style="display: flex; flex-direction: column; gap: 15px;">
-        <a href="{{ url_for('auth.login') }}" style="padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Iniciar Sesión</a>
+{% block top_bar %}{% endblock %}
+
+{% block container_class %}full-screen-container{% endblock %}
+
+{% block content %}
+<div class="transparent-card">
+    <h2>Detección DoS On-Edge</h2>
+
+    <div class="button-group">
+        <a href="{{ url_for('auth.login') }}" class="btn-home btn-blue">Iniciar Sesión</a>
+        <a href="{{ url_for('auth.register') }}" class="btn-home btn-green">Registrarse</a>
         
-        <a href="{{ url_for('auth.register') }}" style="padding: 10px 20px; background-color: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Registrarse</a>
+        <hr class="divider-home">
         
-        <hr style="width: 100%; border: 0; border-top: 1px solid #e5e7eb; margin: 10px 0;">
-        
-        <a href="{{ url_for('auth.guest') }}" style="padding: 10px 20px; background-color: #6b7280; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Entrar como Invitado</a>
+        <a href="{{ url_for('auth.guest') }}" class="btn-home btn-gray">Entrar como Invitado</a>
     </div>
 </div>
 {% endblock %}

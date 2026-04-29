@@ -161,3 +161,159 @@ button:hover {
     color: #991b1b;
     border: 1px solid #f87171;
 }
+
+/* =========================================
+   ESTILOS ESPECÍFICOS PARA LA PÁGINA DE INICIO
+   ========================================= */
+
+/* Fondo a pantalla completa */
+.body-home {
+    background-image: url('../img/fondo.png'); /* Asegúrate de que el nombre coincide */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    height: 100vh;
+}
+
+/* Contenedor que empuja la tarjeta a la derecha y centra verticalmente */
+.full-screen-container {
+    display: flex;
+    justify-content: flex-end; /* Alinea el contenido a la derecha */
+    align-items: center;       /* Centra verticalmente */
+    height: 100vh;
+    padding-right: 8%;         /* Margen desde el borde derecho */
+}
+
+/* Tarjeta transparente unificada para Inicio, Login y Registro */
+.transparent-card {
+    background: transparent;
+    width: 450px;          /* Ancho fijo para que botones e inputs midan lo mismo */
+    padding: 30px;         /* Mismo padding para todas las páginas */
+    text-align: center;
+}
+
+/* Textos en blanco con sombra para que sean legibles sobre el fondo */
+.transparent-card h2 {
+    color: #ffffff;
+    font-size: 26px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.9); /* Sombra fuerte para legibilidad */
+}
+
+.transparent-card p {
+    color: #d1d5db; /* Gris muy clarito */
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+}
+
+/* Estilo base de los botones de la página de inicio */
+.btn-home {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 25px;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: opacity 0.3s ease, transform 0.1s;
+    border: none;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.btn-home:hover {
+    opacity: 0.9;
+    transform: translateY(-2px); /* Pequeño salto al pasar el ratón */
+}
+
+/* Colores de los botones */
+.btn-blue { background-color: #08d6fe; }
+.btn-green { background-color: #013d76; }
+.btn-gray { background-color: #7386a0; }
+
+/* La línea separadora */
+.divider-home {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    margin: 25px 0;
+}
+
+/* Estilos para formularios dentro de la tarjeta transparente */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Forzamos a que los inputs ocupen el 100% del espacio disponible */
+.form-group input {
+    width: 100%;           /* Ocupa todo el ancho de la tarjeta */
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    color: white;
+    font-size: 16px;
+    box-sizing: border-box; /* Fundamental para que el padding no desborde el ancho */
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4f80ff;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-footer {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #d1d5db !important;
+    line-height: 1.8;
+}
+
+.auth-footer a {
+    color: #4f80ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: normal !important;
+    opacity: 0.8;
+}
+
+/* Ajuste visual para centrar los formularios de auth con el fondo */
+.auth-card {
+    transform: translateY(6vh); /* Mueve la tarjeta hacia abajo. Puedes subir o bajar este número a tu gusto */
+}
+
+/* Reducir espacio debajo del título SOLO en login y registro */
+.auth-card h2 {
+    margin-bottom: 20px; /* Puedes bajarlo a 15px o 10px si lo quieres aún más pegado */
+}
+
+/* Quitar el margen inferior al botón si es el último elemento del formulario */
+.auth-form .btn-home {
+    margin-bottom: 0;
+}
