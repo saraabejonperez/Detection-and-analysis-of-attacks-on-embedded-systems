@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..models import db, User
@@ -10,13 +11,11 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Comprobar si el usuario ya existe
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash("Nombre de usuario no válido. Ya está en uso.", "error")
             return redirect(url_for("auth.register"))
 
-        # Crear nuevo usuario con contraseña hasheada
         hashed_pw = generate_password_hash(password)
         new_user = User(username=username, password_hash=hashed_pw)
         
@@ -34,10 +33,10 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Buscar usuario y comprobar contraseña
         user = User.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password_hash, password):
+            session.clear()
             session['user_id'] = user.id
             session['username'] = user.username
             return redirect(url_for("dashboard.dashboard"))
@@ -49,12 +48,21 @@ def login():
 
 @auth_bp.route("/guest")
 def guest():
-    # Para invitados, limpiamos cualquier sesión previa
     session.clear() 
     session['guest'] = True
+    session['guest_models'] = []
     return redirect(url_for("dashboard.dashboard"))
 
 @auth_bp.route("/logout")
 def logout():
+    if session.get('guest') and 'guest_models' in session:
+        for modelo in session['guest_models']:
+            file_path = modelo.get('ruta_archivo')
+            if file_path and os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(f"Error borrando archivo invitado: {e}")
+                    
     session.clear()
     return redirect(url_for("main.index"))

@@ -4,7 +4,6 @@ dashboard_bp = Blueprint("dashboard", __name__)
 
 @dashboard_bp.route("/")
 def dashboard():
-    # Comprobamos cómo ha entrado el usuario para personalizar la vista
     is_guest = session.get('guest', False)
     username = session.get('username', 'Invitado')
     

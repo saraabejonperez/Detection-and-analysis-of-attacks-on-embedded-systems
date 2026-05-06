@@ -1,99 +1,13 @@
 {% extends "base.html" %}
 
-{% block body_class %}body-home{% endblock %}
-{% block top_bar %}{% endblock %}
-{% block container_class %}app-container{% endblock %}
-
 {% block content %}
-<div class="app-layout">
+<div class="action-blocks" style="height: 100%; display: flex; align-items: center; justify-content: center; gap: 80px;">
+    <button class="action-card" onclick="location.href='/evaluacion'">
+        <h3>EVALUACIÓN</h3>
+    </button>
     
-    <!-- BARRA LATERAL (Sidebar) -->
-    <aside class="sidebar" id="appSidebar">
-        <div class="sidebar-top">
-            <button class="side-btn hamburger" onclick="toggleSidebar()">
-                <i class="fi fi-rr-menu-burger"></i>
-            </button>
-        </div>
-        <div class="sidebar-middle">
-            <button class="side-btn" onclick="location.href='/dispositivos'" title="Dispositivos">
-                <span class="icon"><i class="fi fi-tr-microchip"></i></span>
-                <span class="text">Dispositivos</span>
-            </button>
-            <button class="side-btn" onclick="location.href='/modelos'" title="Modelos">
-                <span class="icon"><i class="fi fi-rr-cubes"></i></span>
-                <span class="text">Modelos</span>
-            </button>
-            <button class="side-btn" onclick="location.href='/evaluacion'" title="Evaluación">
-                <span class="icon"><i class="fi fi-rr-stats"></i></span>
-                <span class="text">Evaluación</span>
-            </button>
-            <button class="side-btn" onclick="location.href='/deteccion'" title="Detección">
-                <span class="icon"><i class="fi fi-rr-target"></i></span>
-                <span class="text">Detección</span>
-            </button>
-        </div>
-        <div class="sidebar-bottom">
-            <button class="side-btn" {% if not is_guest %}onclick="location.href='/cuenta'"{% endif %} title="Cuenta">
-                <span class="icon"><i class="fi fi-rr-user"></i></span>
-                <span class="text">Cuenta</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- ÁREA PRINCIPAL -->
-    <main class="main-content">
-        
-        <!-- Cabecera Superior -->
-        <header class="app-header">
-            <!-- Título transparente -->
-            <div class="app-title">
-                <h2>DoS Detection System</h2>
-            </div>
-            
-            <div class="user-menu-container">
-                <button class="user-btn" onclick="toggleDropdown()">U</button>
-                <div id="userMenu" class="dropdown-content">
-                    {% if not is_guest %}
-                        <a href="/cuenta"><i class="fi fi-rr-user"></i> Cuenta</a>
-                    {% endif %}
-                    <a href="{{ url_for('auth.logout') }}"><i class="fi fi-rr-exit"></i> Salir</a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Bloques Centrales -->
-        <div class="action-blocks">
-            <button class="action-card" onclick="location.href='/evaluacion'">
-                <h3>EVALUACIÓN</h3>
-            </button>
-            
-            <button class="action-card" onclick="location.href='/deteccion'">
-                <h3>DETECCIÓN</h3>
-            </button>
-        </div>
-    </main>
-
+    <button class="action-card" onclick="location.href='/deteccion'">
+        <h3>DETECCIÓN</h3>
+    </button>
 </div>
-
-<script>
-    function toggleDropdown() {
-        document.getElementById("userMenu").classList.toggle("show");
-    }
-
-    function toggleSidebar() {
-        document.getElementById("appSidebar").classList.toggle("expanded");
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('.user-btn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    }
-</script>
 {% endblock %}

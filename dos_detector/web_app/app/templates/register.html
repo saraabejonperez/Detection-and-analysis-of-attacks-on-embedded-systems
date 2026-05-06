@@ -1,25 +1,12 @@
 {% extends "base.html" %}
 
 {% block body_class %}body-home{% endblock %}
-{% block top_bar %}{% endblock %}
 {% block container_class %}full-screen-container{% endblock %}
-
-{% block flash_messages %}{% endblock %}
 
 {% block content %}
 <div class="transparent-card auth-card">
     <h2>Crear Cuenta</h2>
     
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}" style="padding: 10px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
     <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
         <div class="form-group">
             <label for="username">Nuevo Usuario</label>

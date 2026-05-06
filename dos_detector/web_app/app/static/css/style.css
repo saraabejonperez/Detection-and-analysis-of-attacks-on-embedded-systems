@@ -1,3 +1,7 @@
+/* ================
+   RESET Y GLOBALES
+   ================ */
+
 /* Reset básico */
 * {
     margin: 0;
@@ -5,51 +9,50 @@
     box-sizing: border-box;
 }
 
-/* --- Cambio de Tipografía --- */
+/* Tipografía y Fondo General */
 body {
     font-family: 'Montserrat', "Segoe UI", Tahoma, sans-serif;
     background-color: #0f172a;
     color: #e5e7eb;
 }
 
-/* Header (Para páginas secundarias) */
-header {
-    background-color: #020617;
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #1f2937;
+/* Scroll */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-header h1 {
-    font-size: 22px;
-    color: #60a5fa;
+::-webkit-scrollbar-thumb {
+    background: #1f2937;
+    border-radius: 4px;
 }
 
-/* Navbar (Para páginas secundarias) */
-nav {
-    background-color: #020617;
-    padding: 10px 20px;
-    display: flex;
-    gap: 20px;
-    border-bottom: 1px solid #1f2937;
-}
 
-nav a {
-    color: #9ca3af;
-    text-decoration: none;
-    font-weight: 500;
-}
+/* =========================
+   COMPONENTES REUTILIZABLES
+   ========================= */
 
-nav a:hover {
-    color: #60a5fa;
-}
-
-/* Contenedor */
+/* Contenedor Genérico */
 .container {
     padding: 20px;
 }
 
-/* Tarjetas Genéricas */
+/* Botón Genérico */
+button {
+    background-color: #013d76;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Tarjeta Genérica */
 .card {
     background-color: #1e293b;
     padding: 20px;
@@ -90,28 +93,12 @@ nav a:hover {
     margin-top: 5px;
 }
 
-/* Estados */
+/* Estados de colores */
 .status-ok { color: #22c55e; }
 .status-bad { color: #ef4444; }
 .status-neutral { color: #eab308; }
 
-/* Botones genéricos */
-button {
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-right: 10px;
-    font-weight: bold;
-}
-
-button:hover {
-    background-color: #1d4ed8;
-}
-
-/* Alarmas */
+/* Alertas y Mensajes Flash */
 #alarms_list {
     list-style: none;
 }
@@ -129,17 +116,6 @@ button:hover {
     font-weight: bold;
 }
 
-/* Scroll bonito */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #1f2937;
-    border-radius: 4px;
-}
-
-/* Estilos para mensajes Flash */
 .alert-success {
     background-color: #dcfce7;
     color: #166534;
@@ -152,9 +128,47 @@ button:hover {
     border: 1px solid #f87171;
 }
 
-/* =========================================
-   ESTILOS: PÁGINA DE INICIO, LOGIN Y REGISTRO
-   ========================================= */
+
+/* ===================
+   PÁGINAS SECUNDARIAS
+   =================== */
+
+/* Header */
+header {
+    background-color: #020617;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #1f2937;
+}
+
+header h1 {
+    font-size: 22px;
+    color: #60a5fa;
+}
+
+/* Navbar */
+nav {
+    background-color: #020617;
+    padding: 10px 20px;
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #1f2937;
+}
+
+nav a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #60a5fa;
+}
+
+
+/* ======================
+   AUTENTICACIÓN E INICIO
+   ====================== */
 
 .body-home {
     background-image: url('../img/fondo.png');
@@ -174,6 +188,7 @@ button:hover {
     padding-right: 8%;
 }
 
+/* Tarjetas Transparentes */
 .transparent-card {
     background: transparent;
     width: 450px;
@@ -229,12 +244,24 @@ button:hover {
     margin: 25px 0;
 }
 
-/* Formularios Auth (Login/Registro) */
+/* Formularios Auth */
+.auth-card {
+    transform: translateY(6vh);
+}
+
+.auth-card h2 {
+    margin-bottom: 20px;
+}
+
 .auth-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
     text-align: left;
+}
+
+.auth-form .btn-home {
+    margin-bottom: 0;
 }
 
 .form-group label {
@@ -286,22 +313,10 @@ button:hover {
     opacity: 0.8;
 }
 
-.auth-card {
-    transform: translateY(6vh);
-}
 
-.auth-card h2 {
-    margin-bottom: 20px;
-}
-
-.auth-form .btn-home {
-    margin-bottom: 0;
-}
-
-
-/* =========================================
-   ESTILOS PARA EL DASHBOARD PRINCIPAL (APP)
-   ========================================= */
+/* ===================
+   DASHBOARD PRINCIPAL
+   =================== */
 
 .app-container {
     padding: 0;
@@ -315,17 +330,28 @@ button:hover {
     width: 100%;
 }
 
-/* --- Barra Lateral Expandible --- */
-.sidebar {
-    width: 100px;
-    background-color: #06437a;
-    border-radius: 0 50px 50px 0;
+.main-content {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    padding: 0;
+}
+
+
+/* ===================================
+   DASHBOARD PRINCIPAL - Barra lateral
+   =================================== */
+
+/* Contenedor Sidebar */
+.sidebar {
+    width: 100px;
+    background-color: #00041f;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 40px 0;
-    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+    padding: 40px 0 40px 22.5px;
     z-index: 10;
     transition: width 0.3s ease;
 }
@@ -338,42 +364,40 @@ button:hover {
 
 .sidebar.expanded {
     width: 250px;
-    align-items: flex-start;
-    padding-left: 20px;
 }
 
-/* Botones de la barra lateral corregidos */
+/* Botones de la Barra Lateral */
 .side-btn {
     width: 55px;
     height: 55px;
-    border-radius: 14px;
     border: none;
-    background-color: white;
-    color: #06437a;
+    background-color: transparent;
+    color: white;
     font-size: 22px;
     font-weight: bold;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Fija el inicio a la izquierda */
-    padding-left: 15px; /* Empuja el icono al centro del cuadro de 55px */
-    transition: width 0.3s ease, transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    justify-content: flex-start;
+    padding-left: 15px;
+    transition: width 0.3s ease, transform 0.2s, color 0.2s;
+    box-shadow: none;
     overflow: hidden;
     white-space: nowrap;
 }
 
 .side-btn:hover {
     transform: scale(1.1);
-    background-color: #f3f4f6;
+    color: #08d6fe;
+    background-color: transparent;
 }
 
 .sidebar.expanded .side-btn {
     width: 210px;
-    padding-left: 15px; /* Se mantiene igual para que el icono no salte al abrir */
+    padding-left: 15px;
 }
 
-/* Iconos y textos de la barra lateral */
+/* Interior del botón */
 .side-btn .icon {
     display: flex;
     align-items: center;
@@ -384,7 +408,7 @@ button:hover {
 
 .side-btn .text {
     opacity: 0;
-    width: 0;         /* Oculta el texto cerrado para que no empuje al icono */
+    width: 0;
     margin-left: 0;
     font-size: 16px;
     transition: opacity 0.2s ease, margin-left 0.2s ease, width 0.2s ease;
@@ -392,37 +416,50 @@ button:hover {
 
 .sidebar.expanded .side-btn .text {
     opacity: 1;
-    width: auto;      /* Devuelve el ancho al expandir */
+    width: auto;
     margin-left: 15px;
     transition-delay: 0.1s;
 }
 
+/* Botones Especiales */
 .side-btn.hamburger {
     font-size: 20px;
     font-weight: normal;
 }
 
-
-/* --- Área Principal --- */
-.main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 40px 60px;
+.sidebar.expanded .side-btn.hamburger {
+    width: 55px; 
+    padding-left: 15px;
 }
 
-/* --- Cabecera (Título y Menú) --- */
+.side-btn.inactive-btn {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.side-btn.inactive-btn:hover {
+    transform: none;
+    color: white;
+}
+
+
+/* =====================================
+   DASHBOARD PRINCIPAL - Cabecera y menú
+   ===================================== */
+
+/* Contenedor App Header */
 .app-header {
-    background-color: transparent !important;
-    border-bottom: none !important;
+    background-color: #00041f !important;
+    border-bottom: 1px solid #000600 !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 40px;
-    padding: 0;
+    padding: 20px 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    z-index: 5;
 }
 
-/* --- Título Sin Fondo --- */
+/* Título */
 .app-title {
     flex-grow: 1;
     text-align: center;
@@ -434,41 +471,46 @@ button:hover {
 .app-title h2 {
     color: white;
     margin: 0;
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 700;
     letter-spacing: 2px;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+    text-shadow: none;
 }
 
-/* --- Botón de Usuario y Desplegable --- */
+/* Botón de Usuario */
 .user-menu-container {
     position: relative;
     display: inline-block;
 }
 
 .user-btn {
-    width: 85px;
-    height: 85px;
-    border-radius: 50%;
-    background-color: #06437a;
+    width: 50px; 
+    height: 50px;
+    background-color: transparent;
     border: none;
     color: white;
-    font-size: 30px;
+    font-size: 24px;
+    font-weight: bold;
     margin-right: 0;
     cursor: pointer;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
-    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .user-btn:hover {
-    transform: scale(1.05);
+    background-color: transparent;
+    color: #08d6fe;
+    transform: scale(1.1);
 }
 
+/* Desplegable de Usuario */
 .dropdown-content {
     display: none;
     position: absolute;
     right: 0;
-    top: 100px;
+    top: 70px;
     background-color: #1e293b;
     min-width: 180px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
@@ -499,7 +541,11 @@ button:hover {
     display: block;
 }
 
-/* --- Bloques Centrales --- */
+
+/* =======================================
+   DASHBOARD PRINCIPAL - Bloques Centrales
+   ======================================= */
+
 .action-blocks {
     display: flex;
     justify-content: center;
@@ -511,7 +557,7 @@ button:hover {
 .action-card {
     width: 260px;
     height: 260px;
-    background-color: #06437a;
+    background-color: #013d76;
     border-radius: 25px;
     border: none;
     color: white;
@@ -534,4 +580,108 @@ button:hover {
     font-size: 26px;
     letter-spacing: 2px;
     margin: 0;
+}
+
+
+/* MODELOS */
+/* --- Cabecera de páginas interiores --- */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    color: #e5e7eb;
+}
+
+/* --- Botón de Acción Principal --- */
+.action-btn {
+    background-color: transparent;
+    color: #08d6fe;
+    border: 2px solid #08d6fe;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: rgba(8, 214, 254, 0.1);
+    transform: scale(1.05);
+}
+
+/* --- Tabla Glassmorphism --- */
+.glass-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(2, 6, 23, 0.6); /* Fondo semitransparente oscuro */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    color: white;
+}
+
+.glass-table th, .glass-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-table th {
+    background-color: rgba(255, 255, 255, 0.05);
+    font-weight: bold;
+    color: #08d6fe;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.glass-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* --- Ventana Modal --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-card {
+    background-color: #0f172a;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #1f2937;
+    width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    color: white;
+}
+
+.modal-card h3 {
+    margin-bottom: 20px;
+    color: #08d6fe;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-cancel {
+    background-color: transparent;
+    color: #9ca3af;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-cancel:hover {
+    color: white;
 }

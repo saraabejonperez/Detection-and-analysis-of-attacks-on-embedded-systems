@@ -3,57 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <title>DoS Detection System</title>
-    <!-- Importar Tipografía -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Importar Iconos Flaticon (Regular Rounded y Thin Rounded) -->
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-thin-rounded/css/uicons-thin-rounded.css'>
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="body-home">
 
-{% block top_bar %}
-<header>
-    <h1>DoS Detection Dashboard</h1>
-    <div style="text-align: center; color: #a1a1aa; margin-top: -10px; padding-bottom: 10px;">
-        {% if session.get('username') %}
-            Conectado como: <strong>{{ session['username'] }}</strong> 
-            | <a href="{{ url_for('auth.logout') }}" style="color: #ef4444;">Cerrar Sesión</a>
-        {% elif session.get('guest') %}
-            Conectado como: <strong>Invitado</strong> (Los datos no se guardarán)
-            | <a href="{{ url_for('auth.logout') }}" style="color: #ef4444;">Salir</a>
-        {% endif %}
-    </div>
-</header>
-
-{% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
-<nav>
-    <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
-    <a href="/devices">Devices</a>
-    <a href="/models">Models</a>
-    <a href="/evaluation">Evaluation</a>
-</nav>
-{% endif %}
-{% endblock %}
-
-<div class="{% block container_class %}container{% endblock %}">
-    
+    <!-- MENSAJES FLASH GLOBALES -->
     {% block flash_messages %}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
+                <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: auto; min-width: 300px; text-align: center;">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
+                    <div class="alert alert-{{ category }}" style="padding: 10px; margin-bottom: 10px; border-radius: 6px; font-weight: bold;">
                         {{ message }}
                     </div>
                 {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
     {% endblock %}
 
-    {% block content %}{% endblock %}
-</div>
+
+    <!-- ==============================================================
+         1. ABRIMOS LA ESTRUCTURA DEPENDIENDO DE EN QUÉ PÁGINA ESTEMOS
+         ============================================================== -->
+    {% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
+        <div class="app-layout">
+            
+            <!-- BARRA LATERAL -->
+            <aside class="sidebar" id="appSidebar">
+                <div class="sidebar-top">
+                    <button class="side-btn hamburger" onclick="toggleSidebar()">
+                        <i class="fi fi-rr-menu-burger"></i>
+                    </button>
+                </div>
+                <div class="sidebar-middle">
+                    <button class="side-btn" onclick="location.href='/dispositivos'" title="Dispositivos">
+                        <span class="icon"><i class="fi fi-tr-microchip"></i></span>
+                        <span class="text">Dispositivos</span>
+                    </button>
+                    <button class="side-btn" onclick="location.href='/modelos'" title="Modelos">
+                        <span class="icon"><i class="fi fi-rr-cubes"></i></span>
+                        <span class="text">Modelos</span>
+                    </button>
+                    <button class="side-btn" onclick="location.href='/evaluacion'" title="Evaluación">
+                        <span class="icon"><i class="fi fi-rr-stats"></i></span>
+                        <span class="text">Evaluación</span>
+                    </button>
+                    <button class="side-btn" onclick="location.href='/deteccion'" title="Detección">
+                        <span class="icon"><i class="fi fi-rr-target"></i></span>
+                        <span class="text">Detección</span>
+                    </button>
+                </div>
+                <div class="sidebar-bottom">
+                    <button class="side-btn {% if session.get('guest') %}inactive-btn{% endif %}" {% if not session.get('guest') %}onclick="location.href='/cuenta'"{% endif %} title="{% if session.get('guest') %}Invitado{% else %}Cuenta{% endif %}">
+                        <span class="icon"><i class="fi fi-rr-user"></i></span>
+                        <span class="text">
+                            {% if session.get('guest') %}Invitado{% else %}Cuenta{% endif %}
+                        </span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- ÁREA PRINCIPAL -->
+            <main class="main-content">
+                
+                <!-- CABECERA -->
+                <header class="app-header">
+                    <div class="app-title">
+                        <h2>DoS Detection System</h2>
+                    </div>
+                    
+                    <div class="user-menu-container">
+                        <button class="user-btn" onclick="toggleDropdown()">
+                            {% if session.get('guest') %}
+                                I
+                            {% elif session.get('username') %}
+                                {{ session.get('username')[0] | upper }}
+                            {% else %}
+                                U
+                            {% endif %}
+                        </button>
+                        
+                        <div id="userMenu" class="dropdown-content">
+                            {% if not session.get('guest') %}
+                                <a href="/cuenta"><i class="fi fi-rr-user"></i> Cuenta</a>
+                            {% endif %}
+                            <a href="{{ url_for('auth.logout') }}"><i class="fi fi-rr-exit"></i> Salir</a>
+                        </div>
+                    </div>
+                </header>
+
+                <div style="height: calc(100vh - 90px); overflow-y: auto;">
+    {% else %}
+        <div class="{% block container_class %}container{% endblock %}">
+    {% endif %}
+
+
+        <!-- ==============================================================
+             2. INYECTAMOS EL CONTENIDO (SE DEFINE UNA SOLA VEZ)
+             ============================================================== -->
+        {% block content %}{% endblock %}
+
+
+    <!-- ==============================================================
+         3. CERRAMOS LA ESTRUCTURA CORRECTAMENTE
+         ============================================================== -->
+    {% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
+                </div>
+            </main>
+        </div>
+
+        <!-- SCRIPTS GLOBALES -->
+        <script>
+            function toggleDropdown() {
+                document.getElementById("userMenu").classList.toggle("show");
+            }
+            function toggleSidebar() {
+                document.getElementById("appSidebar").classList.toggle("expanded");
+            }
+            
+            // Función global para cerrar menús y modales haciendo clic fuera
+            window.onclick = function(event) {
+                // Cerrar menú de usuario
+                if (!event.target.matches('.user-btn')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+                // Cerrar cualquier ventana modal abierta
+                if (event.target.classList.contains('modal-overlay')) {
+                    event.target.style.display = "none";
+                }
+            }
+        </script>
+    {% else %}
+        </div>
+    {% endif %}
 
 </body>
 </html>
