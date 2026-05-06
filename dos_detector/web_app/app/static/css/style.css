@@ -5,14 +5,14 @@
     box-sizing: border-box;
 }
 
-/* Fondo general */
+/* --- Cambio de Tipografía --- */
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', "Segoe UI", Tahoma, sans-serif;
     background-color: #0f172a;
     color: #e5e7eb;
 }
 
-/* Header */
+/* Header (Para páginas secundarias) */
 header {
     background-color: #020617;
     padding: 15px;
@@ -25,7 +25,7 @@ header h1 {
     color: #60a5fa;
 }
 
-/* Navbar */
+/* Navbar (Para páginas secundarias) */
 nav {
     background-color: #020617;
     padding: 10px 20px;
@@ -49,7 +49,7 @@ nav a:hover {
     padding: 20px;
 }
 
-/* Tarjetas */
+/* Tarjetas Genéricas */
 .card {
     background-color: #1e293b;
     padding: 20px;
@@ -64,14 +64,13 @@ nav a:hover {
     color: #60a5fa;
 }
 
-/* Grid de estado */
+/* Grid de estado y métricas */
 .status {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;
 }
 
-/* Cada métrica */
 .metric {
     background-color: #020617;
     padding: 15px;
@@ -92,19 +91,11 @@ nav a:hover {
 }
 
 /* Estados */
-.status-ok {
-    color: #22c55e;
-}
+.status-ok { color: #22c55e; }
+.status-bad { color: #ef4444; }
+.status-neutral { color: #eab308; }
 
-.status-bad {
-    color: #ef4444;
-}
-
-.status-neutral {
-    color: #eab308;
-}
-
-/* Botones */
+/* Botones genéricos */
 button {
     background-color: #2563eb;
     color: white;
@@ -138,7 +129,7 @@ button:hover {
     font-weight: bold;
 }
 
-/* Scroll bonito (opcional) */
+/* Scroll bonito */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -148,14 +139,13 @@ button:hover {
     border-radius: 4px;
 }
 
-/* Estilos para mensajes de éxito */
+/* Estilos para mensajes Flash */
 .alert-success {
     background-color: #dcfce7;
     color: #166534;
     border: 1px solid #4ade80;
 }
 
-/* Estilos para mensajes de error */
 .alert-error {
     background-color: #fee2e2;
     color: #991b1b;
@@ -163,12 +153,11 @@ button:hover {
 }
 
 /* =========================================
-   ESTILOS ESPECÍFICOS PARA LA PÁGINA DE INICIO
+   ESTILOS: PÁGINA DE INICIO, LOGIN Y REGISTRO
    ========================================= */
 
-/* Fondo a pantalla completa */
 .body-home {
-    background-image: url('../img/fondo.png'); /* Asegúrate de que el nombre coincide */
+    background-image: url('../img/fondo.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -177,40 +166,37 @@ button:hover {
     height: 100vh;
 }
 
-/* Contenedor que empuja la tarjeta a la derecha y centra verticalmente */
 .full-screen-container {
     display: flex;
-    justify-content: flex-end; /* Alinea el contenido a la derecha */
-    align-items: center;       /* Centra verticalmente */
+    justify-content: flex-end;
+    align-items: center;
     height: 100vh;
-    padding-right: 8%;         /* Margen desde el borde derecho */
+    padding-right: 8%;
 }
 
-/* Tarjeta transparente unificada para Inicio, Login y Registro */
 .transparent-card {
     background: transparent;
-    width: 450px;          /* Ancho fijo para que botones e inputs midan lo mismo */
-    padding: 30px;         /* Mismo padding para todas las páginas */
+    width: 450px;
+    padding: 30px;
     text-align: center;
 }
 
-/* Textos en blanco con sombra para que sean legibles sobre el fondo */
 .transparent-card h2 {
     color: #ffffff;
     font-size: 26px;
     margin-bottom: 40px;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.9); /* Sombra fuerte para legibilidad */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.9);
 }
 
 .transparent-card p {
-    color: #d1d5db; /* Gris muy clarito */
+    color: #d1d5db;
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 30px;
     text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
 }
 
-/* Estilo base de los botones de la página de inicio */
+/* Botones de Inicio */
 .btn-home {
     display: block;
     width: 100%;
@@ -229,15 +215,13 @@ button:hover {
 
 .btn-home:hover {
     opacity: 0.9;
-    transform: translateY(-2px); /* Pequeño salto al pasar el ratón */
+    transform: translateY(-2px);
 }
 
-/* Colores de los botones */
 .btn-blue { background-color: #08d6fe; }
 .btn-green { background-color: #013d76; }
 .btn-gray { background-color: #7386a0; }
 
-/* La línea separadora */
 .divider-home {
     width: 100%;
     border: 0;
@@ -245,7 +229,7 @@ button:hover {
     margin: 25px 0;
 }
 
-/* Estilos para formularios dentro de la tarjeta transparente */
+/* Formularios Auth (Login/Registro) */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -261,16 +245,15 @@ button:hover {
     font-size: 16px;
 }
 
-/* Forzamos a que los inputs ocupen el 100% del espacio disponible */
 .form-group input {
-    width: 100%;           /* Ocupa todo el ancho de la tarjeta */
+    width: 100%;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px;
     color: white;
     font-size: 16px;
-    box-sizing: border-box; /* Fundamental para que el padding no desborde el ancho */
+    box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -303,17 +286,252 @@ button:hover {
     opacity: 0.8;
 }
 
-/* Ajuste visual para centrar los formularios de auth con el fondo */
 .auth-card {
-    transform: translateY(6vh); /* Mueve la tarjeta hacia abajo. Puedes subir o bajar este número a tu gusto */
+    transform: translateY(6vh);
 }
 
-/* Reducir espacio debajo del título SOLO en login y registro */
 .auth-card h2 {
-    margin-bottom: 20px; /* Puedes bajarlo a 15px o 10px si lo quieres aún más pegado */
+    margin-bottom: 20px;
 }
 
-/* Quitar el margen inferior al botón si es el último elemento del formulario */
 .auth-form .btn-home {
     margin-bottom: 0;
+}
+
+
+/* =========================================
+   ESTILOS PARA EL DASHBOARD PRINCIPAL (APP)
+   ========================================= */
+
+.app-container {
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* --- Barra Lateral Expandible --- */
+.sidebar {
+    width: 100px;
+    background-color: #06437a;
+    border-radius: 0 50px 50px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 0;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+    z-index: 10;
+    transition: width 0.3s ease;
+}
+
+.sidebar-middle {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.sidebar.expanded {
+    width: 250px;
+    align-items: flex-start;
+    padding-left: 20px;
+}
+
+/* Botones de la barra lateral corregidos */
+.side-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 14px;
+    border: none;
+    background-color: white;
+    color: #06437a;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Fija el inicio a la izquierda */
+    padding-left: 15px; /* Empuja el icono al centro del cuadro de 55px */
+    transition: width 0.3s ease, transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.side-btn:hover {
+    transform: scale(1.1);
+    background-color: #f3f4f6;
+}
+
+.sidebar.expanded .side-btn {
+    width: 210px;
+    padding-left: 15px; /* Se mantiene igual para que el icono no salte al abrir */
+}
+
+/* Iconos y textos de la barra lateral */
+.side-btn .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    min-width: 25px;
+}
+
+.side-btn .text {
+    opacity: 0;
+    width: 0;         /* Oculta el texto cerrado para que no empuje al icono */
+    margin-left: 0;
+    font-size: 16px;
+    transition: opacity 0.2s ease, margin-left 0.2s ease, width 0.2s ease;
+}
+
+.sidebar.expanded .side-btn .text {
+    opacity: 1;
+    width: auto;      /* Devuelve el ancho al expandir */
+    margin-left: 15px;
+    transition-delay: 0.1s;
+}
+
+.side-btn.hamburger {
+    font-size: 20px;
+    font-weight: normal;
+}
+
+
+/* --- Área Principal --- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 60px;
+}
+
+/* --- Cabecera (Título y Menú) --- */
+.app-header {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    padding: 0;
+}
+
+/* --- Título Sin Fondo --- */
+.app-title {
+    flex-grow: 1;
+    text-align: center;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.app-title h2 {
+    color: white;
+    margin: 0;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+}
+
+/* --- Botón de Usuario y Desplegable --- */
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-btn {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color: #06437a;
+    border: none;
+    color: white;
+    font-size: 30px;
+    margin-right: 0;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+    transition: transform 0.2s;
+}
+
+.user-btn:hover {
+    transform: scale(1.05);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100px;
+    background-color: #1e293b;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
+    border-radius: 12px;
+    z-index: 100;
+    border: 1px solid #334155;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.show {
+    display: block;
+}
+
+/* --- Bloques Centrales --- */
+.action-blocks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    flex-grow: 1;
+}
+
+.action-card {
+    width: 260px;
+    height: 260px;
+    background-color: #06437a;
+    border-radius: 25px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    background-color: #085294;
+}
+
+.action-card h3 {
+    font-size: 26px;
+    letter-spacing: 2px;
+    margin: 0;
 }
