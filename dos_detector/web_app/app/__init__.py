@@ -5,10 +5,8 @@ from .models import db
 def create_app():
     app = Flask(__name__)
     
-    # Clave secreta necesaria para las sesiones y los mensajes flash
-    app.secret_key = 'super_secret_key_tfg_change_in_production'
+    app.secret_key = os.urandom(24)
     
-    # Configuración de la base de datos SQLite
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

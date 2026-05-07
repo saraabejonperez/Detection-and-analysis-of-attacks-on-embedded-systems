@@ -37,6 +37,7 @@ def login():
         
         if user and check_password_hash(user.password_hash, password):
             session.clear()
+            session.permanent = False
             session['user_id'] = user.id
             session['username'] = user.username
             return redirect(url_for("dashboard.dashboard"))
@@ -48,7 +49,8 @@ def login():
 
 @auth_bp.route("/guest")
 def guest():
-    session.clear() 
+    session.clear()
+    session.permanent = False
     session['guest'] = True
     session['guest_models'] = []
     return redirect(url_for("dashboard.dashboard"))
