@@ -13,10 +13,10 @@
     <table class="glass-table">
         <thead>
             <tr>
-                <th>Nombre del Modelo</th>
-                <th>Fecha de Subida</th>
+                <th>Nombre</th>
+                <th>Fecha de Carga</th>
                 <th>Último Uso</th>
-            </tr>
+                <th style="text-align: center;"> </th> </tr>
         </thead>
         <tbody>
             {% for modelo in modelos %}
@@ -24,10 +24,20 @@
                 <td>{{ modelo.nombre }}</td>
                 <td>{{ modelo.fecha_subida.strftime('%d/%m/%Y %H:%M') }}</td>
                 <td>{{ modelo.fecha_ultimo_uso.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td style="text-align: center;">
+                    <form action="{{ url_for('modelos.delete', model_id=(modelo.id if not session.get('guest') else loop.index0)) }}" 
+                        method="POST" 
+                        onsubmit="return confirm('¿Estás seguro de que quieres eliminar este modelo?');"
+                        style="display: inline;">
+                        <button type="submit" class="delete-btn" title="Eliminar Modelo">
+                            <i class="fi fi-tr-trash-xmark"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="3" style="text-align: center; padding: 30px; opacity: 0.7;">No has subido ningún modelo todavía.</td>
+                <td colspan="4" style="text-align: center; padding: 30px; opacity: 0.7;">No has subido ningún modelo todavía.</td>
             </tr>
             {% endfor %}
         </tbody>
