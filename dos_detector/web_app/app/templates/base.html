@@ -25,10 +25,6 @@
         {% endwith %}
     {% endblock %}
 
-
-    <!-- ==============================================================
-         1. ABRIMOS LA ESTRUCTURA DEPENDIENDO DE EN QUÉ PÁGINA ESTEMOS
-         ============================================================== -->
     {% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
         <div class="app-layout">
             
@@ -39,24 +35,34 @@
                         <i class="fi fi-rr-menu-burger"></i>
                     </button>
                 </div>
+
                 <div class="sidebar-middle">
+                    <button class="side-btn" onclick="location.href='/dashboard'" title="Inicio">
+                        <span class="icon"><i class="fi fi-rr-home"></i></span>
+                        <span class="text">Inicio</span>
+                    </button>
+
                     <button class="side-btn" onclick="location.href='/dispositivos'" title="Dispositivos">
                         <span class="icon"><i class="fi fi-tr-microchip"></i></span>
                         <span class="text">Dispositivos</span>
                     </button>
+
                     <button class="side-btn" onclick="location.href='/modelos'" title="Modelos">
                         <span class="icon"><i class="fi fi-rr-cubes"></i></span>
                         <span class="text">Modelos</span>
                     </button>
+
                     <button class="side-btn" onclick="location.href='/evaluacion'" title="Evaluación">
                         <span class="icon"><i class="fi fi-rr-stats"></i></span>
                         <span class="text">Evaluación</span>
                     </button>
+
                     <button class="side-btn" onclick="location.href='/deteccion'" title="Detección">
                         <span class="icon"><i class="fi fi-rr-target"></i></span>
                         <span class="text">Detección</span>
                     </button>
                 </div>
+
                 <div class="sidebar-bottom">
                     <button class="side-btn {% if session.get('guest') %}inactive-btn{% endif %}" {% if not session.get('guest') %}onclick="location.href='/cuenta'"{% endif %} title="{% if session.get('guest') %}Invitado{% else %}Cuenta{% endif %}">
                         <span class="icon"><i class="fi fi-rr-user"></i></span>
@@ -73,7 +79,9 @@
                 <!-- CABECERA -->
                 <header class="app-header">
                     <div class="app-title">
-                        <h2>DoS Detection System</h2>
+                        <a href="{{ url_for('dashboard.dashboard') }}" style="text-decoration: none;">
+                            <h2>DoS Detection System</h2>
+                        </a>
                     </div>
                     
                     <div class="user-menu-container">
@@ -101,16 +109,8 @@
         <div class="{% block container_class %}container{% endblock %}">
     {% endif %}
 
-
-        <!-- ==============================================================
-             2. INYECTAMOS EL CONTENIDO (SE DEFINE UNA SOLA VEZ)
-             ============================================================== -->
         {% block content %}{% endblock %}
 
-
-    <!-- ==============================================================
-         3. CERRAMOS LA ESTRUCTURA CORRECTAMENTE
-         ============================================================== -->
     {% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
                 </div>
             </main>
@@ -124,10 +124,8 @@
             function toggleSidebar() {
                 document.getElementById("appSidebar").classList.toggle("expanded");
             }
-            
-            // Función global para cerrar menús y modales haciendo clic fuera
+
             window.onclick = function(event) {
-                // Cerrar menú de usuario
                 if (!event.target.matches('.user-btn')) {
                     var dropdowns = document.getElementsByClassName("dropdown-content");
                     for (var i = 0; i < dropdowns.length; i++) {
@@ -137,7 +135,6 @@
                         }
                     }
                 }
-                // Cerrar cualquier ventana modal abierta
                 if (event.target.classList.contains('modal-overlay')) {
                     event.target.style.display = "none";
                 }

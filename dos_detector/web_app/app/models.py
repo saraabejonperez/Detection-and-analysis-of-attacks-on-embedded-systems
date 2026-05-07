@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import pytz
 
 db = SQLAlchemy()
 
@@ -22,7 +23,7 @@ class Modelo(db.Model):
     ruta_archivo = db.Column(db.String(255), nullable=False)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     
-    fecha_subida = db.Column(db.DateTime, default=datetime.utcnow())
-    fecha_ultimo_uso = db.Column(db.DateTime, default=datetime.utcnow())
+    fecha_subida = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
+    fecha_ultimo_uso = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
 
     usuario = db.relationship('User', backref=db.backref('modelos', lazy=True))

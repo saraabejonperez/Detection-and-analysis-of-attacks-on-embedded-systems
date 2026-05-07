@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime
+import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.utils import secure_filename
 from ...models import db, Modelo
@@ -40,7 +41,7 @@ def upload():
         
     if file:
         filename = secure_filename(file.filename)
-        timestamp = int(datetime.utcnow().timestamp())
+        timestamp = int(datetime.now(pytz.timezone('Europe/Madrid')).timestamp())
         
         upload_folder = os.path.join(current_app.root_path, '..', 'uploads', 'modelos')
         os.makedirs(upload_folder, exist_ok=True)
@@ -59,7 +60,7 @@ def upload():
             session['guest_models'].append({
                 'nombre': filename,
                 'ruta_archivo': file_path,
-                'fecha_subida': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                'fecha_subida': datetime.now(pytz.timezone('Europe/Madrid')).strftime('%Y-%m-%d %H:%M:%S')
             })
             session.modified = True
         

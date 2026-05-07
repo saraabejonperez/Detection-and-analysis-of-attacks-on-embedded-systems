@@ -477,6 +477,11 @@ nav a:hover {
     text-shadow: none;
 }
 
+.app-title a h2:hover {
+    color: #08d6fe;
+    transform: scale(1.05);
+}
+
 /* Botón de Usuario */
 .user-menu-container {
     position: relative;
@@ -533,8 +538,9 @@ nav a:hover {
 }
 
 .dropdown-content a:hover {
-    background-color: #3b82f6;
+    background-color: #08d6fe;
     color: white;
+    opacity: 0.8;
 }
 
 .show {
@@ -582,18 +588,18 @@ nav a:hover {
     margin: 0;
 }
 
-
-/* MODELOS */
-/* --- Cabecera de páginas interiores --- */
+/* =======
+   MODELOS
+   ======= */
 .table-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    color: #e5e7eb;
+    color: #00041f;/* #e5e7eb;*/
 }
 
-/* --- Botón de Acción Principal --- */
+/* Subir modelo */
 .action-btn {
     background-color: transparent;
     color: #08d6fe;
@@ -610,11 +616,11 @@ nav a:hover {
     transform: scale(1.05);
 }
 
-/* --- Tabla Glassmorphism --- */
+/* Tabla */
 .glass-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: rgba(2, 6, 23, 0.6); /* Fondo semitransparente oscuro */
+    background-color: rgba(2, 6, 23, 0.726);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     overflow: hidden;
@@ -640,7 +646,7 @@ nav a:hover {
     background-color: rgba(255, 255, 255, 0.03);
 }
 
-/* --- Ventana Modal --- */
+/* Ventana */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -686,7 +692,7 @@ nav a:hover {
     color: white;
 }
 
-/* Botón de eliminar en la tabla */
+/* Eliminar modelo */
 .delete-btn {
     background: transparent;
     border: none;
