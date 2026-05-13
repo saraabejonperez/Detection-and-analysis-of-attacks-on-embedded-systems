@@ -37,3 +37,15 @@ class File(db.Model):
     modelo_id = db.Column(db.Integer, db.ForeignKey('modelos.id'), nullable=False)
     
     modelo = db.relationship('Modelo', backref=db.backref('archivos_config', cascade="all, delete-orphan", lazy=True))
+
+class Dispositivo(db.Model):
+    __tablename__ = 'dispositivos'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), nullable=False)
+    ip = db.Column(db.String(50), nullable=False)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    fecha_registro = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
+    fecha_ultimo_uso = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
+
+    usuario = db.relationship('User', backref=db.backref('dispositivos', cascade="all, delete-orphan", lazy=True))

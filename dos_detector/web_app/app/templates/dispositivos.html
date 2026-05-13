@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 40px 60px;">
+    
+    <h2><span style="color: white; margin-bottom: 30px; font-size: 32px; letter-spacing: 1px;">Mis Dispositivos</span></h2>
+
+    <div class="table-header">
+        <p>Gestiona los dispositivos Edge registrados en tu red.</p>
+        <button class="action-btn" onclick="openDeviceModal()">+ Añadir Dispositivo</button>
+    </div>
+
+    <table class="glass-table">
+        <thead>
+            <tr>
+                <th>Nombre del Dispositivo</th>
+                <th>Dirección IP</th>
+                <th>Fecha de Registro</th>
+                <th>Último Uso</th>
+                <th style="text-align: center;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dispositivo in dispositivos %}
+            <tr>
+                <td style="font-weight: bold;">{{ dispositivo.nombre }}</td>
+                <td>{{ dispositivo.ip }}</td>
+                <td>{{ dispositivo.fecha_registro.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ dispositivo.fecha_ultimo_uso.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td style="text-align: center;">
+                    <form action="{{ url_for('dispositivos.delete', device_id=(dispositivo.id if not session.get('guest') else loop.index0)) }}" 
+                          method="POST" 
+                          onsubmit="return confirm('¿Seguro que deseas eliminar este dispositivo?');"
+                          style="display: inline;">
+                        <button type="submit" class="delete-btn" title="Eliminar Dispositivo">
+                            <i class="fi fi-tr-trash-xmark"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 30px; opacity: 0.7;">No tienes ningún dispositivo registrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="deviceModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3>Registrar Nuevo Dispositivo</h3>
+        <form action="{{ url_for('dispositivos.add') }}" method="POST">
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="nombre_dispositivo" style="margin-bottom: 10px;">Nombre identificativo</label>
+                <input type="text" name="nombre_dispositivo" id="nombre_dispositivo" placeholder="Ej: Raspberry Pi Sala 1" required style="background: rgba(0,0,0,0.2);">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="ip_dispositivo" style="margin-bottom: 10px;">Dirección IP</label>
+                <input type="text" name="ip_dispositivo" id="ip_dispositivo" placeholder="Ej: 192.168.1.50" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" required style="background: rgba(0,0,0,0.2);">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeDeviceModal()">Cancelar</button>
+                <button type="submit" class="action-btn">Registrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openDeviceModal() {
+        document.getElementById("deviceModal").style.display = "flex";
+    }
+    
+    function closeDeviceModal() {
+        document.getElementById("deviceModal").style.display = "none";
+    }
+
+    document.addEventListener('click', function(event) {
+        var modal = document.getElementById("deviceModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
+</script>
+{% endblock %}

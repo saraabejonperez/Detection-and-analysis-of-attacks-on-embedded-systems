@@ -53,6 +53,7 @@ def guest():
     session.permanent = False
     session['guest'] = True
     session['guest_models'] = []
+    session['guest_devices'] = []
     return redirect(url_for("dashboard.dashboard"))
 
 @auth_bp.route("/logout")
