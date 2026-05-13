@@ -345,6 +345,7 @@ nav a:hover {
 /* Contenedor Sidebar */
 .sidebar {
     width: 100px;
+    flex-shrink: 0;
     background-color: #00041f;
     border-radius: 0;
     display: flex;
