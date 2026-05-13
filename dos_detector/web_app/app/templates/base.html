@@ -10,7 +10,6 @@
 </head>
 <body class="body-home">
 
-    <!-- MENSAJES FLASH GLOBALES -->
     {% block flash_messages %}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -28,7 +27,6 @@
     {% if request.endpoint not in ['main.index', 'auth.login', 'auth.register'] %}
         <div class="app-layout">
             
-            <!-- BARRA LATERAL -->
             <aside class="sidebar" id="appSidebar">
                 <div class="sidebar-top">
                     <button class="side-btn hamburger" onclick="toggleSidebar()">
@@ -73,10 +71,8 @@
                 </div>
             </aside>
 
-            <!-- ÁREA PRINCIPAL -->
             <main class="main-content">
                 
-                <!-- CABECERA -->
                 <header class="app-header">
                     <div class="app-title">
                         <a href="{{ url_for('dashboard.dashboard') }}" style="text-decoration: none;">
@@ -116,11 +112,11 @@
             </main>
         </div>
 
-        <!-- SCRIPTS GLOBALES -->
         <script>
             function toggleDropdown() {
                 document.getElementById("userMenu").classList.toggle("show");
             }
+
             function toggleSidebar() {
                 document.getElementById("appSidebar").classList.toggle("expanded");
             }
@@ -140,9 +136,29 @@
                 }
             }
         </script>
+
     {% else %}
         </div>
     {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var alerts = document.querySelectorAll('.alert');
+            
+            if (alerts.length > 0) {
+                setTimeout(function() {
+                    alerts.forEach(function(alert) {
+                        alert.style.transition = "opacity 0.5s ease";
+                        alert.style.opacity = "0";
+                        
+                        setTimeout(function() {
+                            alert.remove();
+                        }, 500);
+                    });
+                }, 3000);
+            }
+        });
+    </script>
 
 </body>
 </html>

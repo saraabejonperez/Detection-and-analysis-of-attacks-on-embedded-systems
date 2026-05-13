@@ -60,11 +60,20 @@ def logout():
     if session.get('guest') and 'guest_models' in session:
         for modelo in session['guest_models']:
             file_path = modelo.get('ruta_archivo')
+            features_path = modelo.get('ruta_features')
+            
             if file_path and os.path.exists(file_path):
                 try:
                     os.remove(file_path)
                 except Exception as e:
                     print(f"Error borrando archivo invitado: {e}")
+            
+            if features_path and os.path.exists(features_path):
+                try:
+                    os.remove(features_path)
+                except Exception as e:
+                    print(f"Error borrando features invitado: {e}")
                     
     session.clear()
+    session.permanent = False
     return redirect(url_for("main.index"))

@@ -27,3 +27,13 @@ class Modelo(db.Model):
     fecha_ultimo_uso = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
 
     usuario = db.relationship('User', backref=db.backref('modelos', lazy=True))
+
+class File(db.Model):
+    __tablename__ = 'files'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), nullable=False)
+    ruta_archivo = db.Column(db.String(255), nullable=False)
+    modelo_id = db.Column(db.Integer, db.ForeignKey('modelos.id'), nullable=False)
+    
+    modelo = db.relationship('Modelo', backref=db.backref('archivos_config', cascade="all, delete-orphan", lazy=True))

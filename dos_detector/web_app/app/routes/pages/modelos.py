@@ -4,7 +4,7 @@ from datetime import datetime
 import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from werkzeug.utils import secure_filename
-from ...models import db, Modelo
+from ...models import db, Modelo, File
 
 modelos_bp = Blueprint("modelos", __name__)
 
@@ -29,60 +29,55 @@ def index():
 
 @modelos_bp.route("/modelos/upload", methods=["POST"])
 def upload():
-    if 'archivo_modelo' not in request.files:
-        flash("No se envió ningún archivo.", "error")
+    if 'archivo_modelo' not in request.files or 'archivo_features' not in request.files:
+        flash("Faltan archivos requeridos.", "error")
         return redirect(url_for("modelos.index"))
         
-    file = request.files['archivo_modelo']
+    file_model = request.files['archivo_modelo']
+    file_features = request.files['archivo_features']
     
-    if file.filename == '':
-        flash("Ningún archivo seleccionado.", "error")
+    if file_model.filename == '' or file_features.filename == '':
+        flash("Debes seleccionar ambos archivos.", "error")
         return redirect(url_for("modelos.index"))
+    
+    timestamp = int(datetime.now(pytz.timezone('Europe/Madrid')).timestamp())
+    upload_folder = os.path.join(current_app.root_path, '..', 'uploads', 'modelos')
+    os.makedirs(upload_folder, exist_ok=True)
+    
+    name_model = secure_filename(file_model.filename)
+    name_features = secure_filename(file_features.filename)
+
+    if session.get('guest'):
+        uid = session.get('guest_id', 'guest_temp')
+        path_m = os.path.join(upload_folder, f"guest_{uid}_{timestamp}_{name_model}")
+        path_f = os.path.join(upload_folder, f"guest_{uid}_{timestamp}_{name_features}")
+    else:
+        uid = session.get('user_id')
+        path_m = os.path.join(upload_folder, f"user{uid}_{timestamp}_{name_model}")
+        path_f = os.path.join(upload_folder, f"user{uid}_{timestamp}_{name_features}")
+
+    file_model.save(path_m)
+    file_features.save(path_f)
+
+    if session.get('guest'):
+        if 'guest_models' not in session: session['guest_models'] = []
+        session['guest_models'].append({
+            'nombre': name_model,
+            'ruta_archivo': path_m,
+            'ruta_features': path_f,
+            'fecha_subida': datetime.now(pytz.timezone('Europe/Madrid')).strftime('%Y-%m-%d %H:%M:%S')
+        })
+        session.modified = True
+    else:
+        nuevo_modelo = Modelo(nombre=name_model, ruta_archivo=path_m, usuario_id=uid)
+        db.session.add(nuevo_modelo)
+        db.session.flush()
         
-    if file:
-        filename = secure_filename(file.filename)
-        timestamp = int(datetime.now(pytz.timezone('Europe/Madrid')).timestamp())
+        nuevo_file = File(nombre=name_features, ruta_archivo=path_f, modelo_id=nuevo_modelo.id)
+        db.session.add(nuevo_file)
+        db.session.commit()
         
-        upload_folder = os.path.join(current_app.root_path, '..', 'uploads', 'modelos')
-        os.makedirs(upload_folder, exist_ok=True)
-        
-        if session.get('guest'):
-            if 'guest_id' not in session:
-                session['guest_id'] = str(uuid.uuid4())
-                
-            unique_filename = f"guest_{session['guest_id']}_{timestamp}_{filename}"
-            file_path = os.path.join(upload_folder, unique_filename)
-            file.save(file_path)
-            
-            if 'guest_models' not in session:
-                session['guest_models'] = []
-                
-            session['guest_models'].append({
-                'nombre': filename,
-                'ruta_archivo': file_path,
-                'fecha_subida': datetime.now(pytz.timezone('Europe/Madrid')).strftime('%Y-%m-%d %H:%M:%S')
-            })
-            session.modified = True
-        
-        else:
-            user_id = session.get('user_id')
-            if not user_id:
-                return redirect(url_for('auth.login'))
-                
-            unique_filename = f"user{user_id}_{timestamp}_{filename}"
-            file_path = os.path.join(upload_folder, unique_filename)
-            file.save(file_path)
-            
-            nuevo_modelo = Modelo(
-                nombre=filename,
-                ruta_archivo=file_path,
-                usuario_id=user_id
-            )
-            db.session.add(nuevo_modelo)
-            db.session.commit()
-            
-        flash("Modelo subido con éxito.", "success")
-        
+    flash("Modelo y configuración subidos correctamente.", "success")
     return redirect(url_for("modelos.index"))
 
 @modelos_bp.route("/modelos/delete/<int:model_id>", methods=["POST"])
@@ -93,14 +88,19 @@ def delete(model_id):
         guest_models = session.get('guest_models', [])
         if 0 <= model_id < len(guest_models):
             modelo_data = guest_models.pop(model_id)
+            
             file_path = modelo_data.get('ruta_archivo')
+            features_path = modelo_data.get('ruta_features')
             
             if file_path and os.path.exists(file_path):
                 os.remove(file_path)
             
+            if features_path and os.path.exists(features_path):
+                os.remove(features_path)
+            
             session['guest_models'] = guest_models
             session.modified = True
-            flash("Modelo eliminado.", "success")
+            flash("Modelo y configuración eliminados.", "success")
         else:
             flash("No se pudo encontrar el modelo a eliminar.", "error")
 
@@ -115,7 +115,15 @@ def delete(model_id):
                 try:
                     os.remove(file_path)
                 except Exception as e:
-                    print(f"Error al borrar archivo: {e}")
+                    print(f"Error al borrar archivo principal: {e}")
+            
+            for archivo_config in modelo.archivos_config:
+                config_path = archivo_config.ruta_archivo
+                if config_path and os.path.exists(config_path):
+                    try:
+                        os.remove(config_path)
+                    except Exception as e:
+                        print(f"Error al borrar archivo de configuración: {e}")
             
             db.session.delete(modelo)
             db.session.commit()
