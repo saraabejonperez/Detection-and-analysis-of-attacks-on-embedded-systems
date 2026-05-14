@@ -38,30 +38,30 @@
             
             <div style="display: grid; grid-template-columns: auto 1fr 1fr; grid-template-rows: auto 1fr 1fr; gap: 10px; text-align: center; align-items: center;">
                 <div></div>
-                <div style="color: #9ca3af; font-weight: bold;">Pred. Normal</div>
-                <div style="color: #9ca3af; font-weight: bold;">Pred. DoS</div>
+                <div style="color: #ffffff; font-weight: bold;">Pred. Normal</div>
+                <div style="color: #ffffff; font-weight: bold;">Pred. DoS</div>
                 
-                <div style="color: #9ca3af; font-weight: bold;">Real Normal</div>
+                <div style="color: #ffffff; font-weight: bold;">Real Normal</div>
                 <div style="background: #064e3b; padding: 20px; border-radius: 10px; border: 1px solid #059669;">
-                    <span style="font-size: 12px; color: #a7f3d0; display: block;">True Negatives</span>
+                    <span style="font-size: 16px; color: #a7f3d0; display: block;">True Negatives</span>
                     <strong style="font-size: 28px; color: white;">{{ resultados.cm.tn }}</strong>
                 </div>
                 <div style="background: #7f1d1d; padding: 20px; border-radius: 10px; border: 1px solid #dc2626;">
-                    <span style="font-size: 12px; color: #fecaca; display: block;">False Positives</span>
+                    <span style="font-size: 16px; color: #fecaca; display: block;">False Positives</span>
                     <strong style="font-size: 28px; color: white;">{{ resultados.cm.fp }}</strong>
                 </div>
 
-                <div style="color: #9ca3af; font-weight: bold;">Real DoS</div>
+                <div style="color: #ffffff; font-weight: bold;">Real DoS</div>
                 <div style="background: #7f1d1d; padding: 20px; border-radius: 10px; border: 1px solid #dc2626;">
-                    <span style="font-size: 12px; color: #fecaca; display: block;">False Negatives</span>
+                    <span style="font-size: 16px; color: #fecaca; display: block;">False Negatives</span>
                     <strong style="font-size: 28px; color: white;">{{ resultados.cm.fn }}</strong>
                 </div>
                 <div style="background: #064e3b; padding: 20px; border-radius: 10px; border: 1px solid #059669;">
-                    <span style="font-size: 12px; color: #a7f3d0; display: block;">True Positives</span>
+                    <span style="font-size: 16px; color: #a7f3d0; display: block;">True Positives</span>
                     <strong style="font-size: 28px; color: white;">{{ resultados.cm.tp }}</strong>
                 </div>
             </div>
-            <p style="text-align: center; color: #6b7280; font-size: 14px; margin-top: 20px;">
+            <p style="text-align: center; color: #ffffff; font-size: 20px; margin-top: 20px; font-weight: bold;">
                 Muestras procesadas: {{ resultados.total_samples }}
             </p>
         </div>
@@ -84,11 +84,11 @@
                 </div>
                 <div class="metric" style="padding: 20px;">
                     <h3>PRECISION</h3>
-                    <p style="font-size: 32px; color: white;">{{ resultados.precision }}%</p>
+                    <p style="font-size: 32px; color: rgb(244, 244, 244);">{{ resultados.precision }}%</p>
                 </div>
                 <div class="metric" style="padding: 20px;">
                     <h3>RECALL</h3>
-                    <p style="font-size: 32px; color: white;">{{ resultados.recall }}%</p>
+                    <p style="font-size: 32px; color: rgb(244, 244, 244);">{{ resultados.recall }}%</p>
                 </div>
             </div>
         </div>
