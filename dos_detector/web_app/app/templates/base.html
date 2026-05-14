@@ -131,7 +131,7 @@
                         }
                     }
                 }
-                if (event.target.classList.contains('modal-overlay')) {
+                if (event.target.classList.contains('modal-overlay') && event.target.id !== 'custom-confirm-modal') {
                     event.target.style.display = "none";
                 }
             }
@@ -140,6 +140,47 @@
     {% else %}
         </div>
     {% endif %}
+
+    <div id="custom-confirm-modal" class="modal-overlay" style="display: none; z-index: 10000;">
+        <div class="modal-card" style="max-width: 400px; text-align: center;">
+            <h3 style="color: #ef4444; margin-bottom: 15px; font-size: 22px;">
+                <i class="fi fi-tr-triangle-warning"></i> Confirmación
+            </h3>
+            <p id="custom-confirm-message" style="color: #e5e7eb; margin-bottom: 25px; font-size: 16px;"></p>
+            
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button type="button" onclick="closeCustomConfirm()" style="background: transparent; color: #9ca3af; border: 1px solid #374151; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s;">
+                    Cancelar
+                </button>
+                <button type="button" onclick="executeConfirm()" style="background-color: #7f1d1d; color: white; border: 1px solid #ef4444; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s;">
+                    Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let formToSubmit = null;
+
+        function confirmAction(event, form, message) {
+            event.preventDefault();
+            formToSubmit = form;
+            document.getElementById('custom-confirm-message').innerText = message;
+            document.getElementById('custom-confirm-modal').style.display = 'flex';
+        }
+
+        function closeCustomConfirm() {
+            document.getElementById('custom-confirm-modal').style.display = 'none';
+            formToSubmit = null;
+        }
+
+        function executeConfirm() {
+            if (formToSubmit) {
+                formToSubmit.submit();
+            }
+            closeCustomConfirm();
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

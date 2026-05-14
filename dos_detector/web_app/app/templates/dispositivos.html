@@ -30,8 +30,8 @@
                 <td>{{ dispositivo.fecha_ultimo_uso.strftime('%d/%m/%Y %H:%M') }}</td>
                 <td style="text-align: center;">
                     <form action="{{ url_for('dispositivos.delete', device_id=(dispositivo.id if not session.get('guest') else loop.index0)) }}" 
-                          method="POST" 
-                          onsubmit="return confirm('¿Seguro que deseas eliminar este dispositivo?');"
+                          method="POST"
+                          onsubmit="confirmAction(event, this, '¿Quiere eliminar este dispositivo?');"
                           style="display: inline;">
                         <button type="submit" class="delete-btn" title="Eliminar Dispositivo">
                             <i class="fi fi-tr-trash-xmark"></i>
