@@ -112,8 +112,10 @@ button:hover {
 }
 
 .alert {
-    color: #ef4444;
+    background-color: rgba(240, 230, 140, 0.925);
+    color: #fe3939;
     font-weight: bold;
+    border: 1px solid rgb(240, 230, 140);
 }
 
 .alert-success {

@@ -21,6 +21,7 @@ def create_app():
     from .routes.pages.modelos import modelos_bp
     from .routes.pages.dispositivos import dispositivos_bp
     from .routes.pages.evaluacion import evaluacion_bp
+    from .routes.pages.cuenta import cuenta_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -28,5 +29,6 @@ def create_app():
     app.register_blueprint(modelos_bp)
     app.register_blueprint(dispositivos_bp)
     app.register_blueprint(evaluacion_bp)
+    app.register_blueprint(cuenta_bp)
 
     return app
