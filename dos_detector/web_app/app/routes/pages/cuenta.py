@@ -23,6 +23,7 @@ def index():
     if request.method == "POST":
         nuevo_username = request.form.get("username").strip()
         nueva_pass = request.form.get("password").strip()
+        confirm_pass = request.form.get("confirm_password").strip()
 
         if nuevo_username and nuevo_username != user.username:
             existente = User.query.filter_by(username=nuevo_username).first()
@@ -37,6 +38,8 @@ def index():
         if nueva_pass:
             if len(nueva_pass) < 8:
                 flash("La contraseña debe tener al menos 8 caracteres.", "error")
+            elif nueva_pass != confirm_pass:
+                flash("Las contraseñas no coinciden.", "error")
             else:
                 user.password_hash = generate_password_hash(nueva_pass)
                 db.session.commit()

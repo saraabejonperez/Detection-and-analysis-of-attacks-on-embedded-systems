@@ -11,6 +11,10 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        if len(password) < 8:
+            flash("La contraseña debe tener al menos 8 caracteres.", "error")
+            return redirect(url_for("auth.register"))
+
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash("Nombre de usuario no válido. Ya está en uso.", "error")
