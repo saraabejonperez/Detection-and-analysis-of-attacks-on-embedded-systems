@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 40px 60px; max-width: 900px; margin: 0 auto;">
+    <h2 style="color: white; margin-bottom: 20px; font-size: 32px; letter-spacing: 1px;">Despliegue y Detección</h2>
+    <p style="color: #9ca3af; margin-bottom: 40px;">Vincula un modelo de IA entrenado a un dispositivo Edge (M5Stack) para iniciar la detección de anomalías de red en tiempo real.</p>
+
+    <div class="card" style="padding: 40px;">
+        <form method="POST" action="{{ url_for('deteccion.index') }}" style="display: flex; flex-direction: column; gap: 30px;">
+            
+            <div class="form-group">
+                <label style="color: #08d6fe; display: block; margin-bottom: 15px; font-weight: bold; font-size: 18px;">
+                    <i class="fi fi-rr-cubes"></i> 1. Selecciona el Modelo
+                </label>
+                <select name="model_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
+                    <option value="" disabled selected style="background: #0f172a;">-- Modelos disponibles --</option>
+                    {% for modelo in modelos %}
+                        {% set m_id = loop.index0 if session.get('guest') else modelo.id %}
+                        {% set m_name = modelo.nombre if session.get('guest') else modelo.nombre %}
+                        <option value="{{ m_id }}" style="background: #0f172a; color: white;">{{ m_name }}</option>
+                    {% endfor %}
+                </select>
+                {% if not modelos %}
+                    <small style="color: #ef4444; margin-top: 10px; display: block;">No tienes modelos cargados. Ve a la pestaña Modelos para subir uno.</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label style="color: #08d6fe; display: block; margin-bottom: 15px; font-weight: bold; font-size: 18px;">
+                    <i class="fi fi-tr-microchip"></i> 2. Selecciona el Dispositivo Destino
+                </label>
+                <select name="device_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
+                    <option value="" disabled selected style="background: #0f172a;">-- Dispositivos registrados --</option>
+                    {% for dispositivo in dispositivos %}
+                        {% set d_id = loop.index0 if session.get('guest') else dispositivo.id %}
+                        <option value="{{ d_id }}" style="background: #0f172a; color: white;">{{ dispositivo.nombre }} (IP: {{ dispositivo.ip }})</option>
+                    {% endfor %}
+                </select>
+                {% if not dispositivos %}
+                    <small style="color: #ef4444; margin-top: 10px; display: block;">No tienes dispositivos registrados. Añade tu M5Stack en la pestaña Dispositivos.</small>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px;">
+                <button type="submit" class="action-btn" style="padding: 15px 40px; font-size: 18px;" 
+                        {% if not modelos or not dispositivos %}disabled style="opacity: 0.5; cursor: not-allowed;"{% endif %}>
+                    <i class="fi fi-rr-rocket-lunch"></i> Transferir y Desplegar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
