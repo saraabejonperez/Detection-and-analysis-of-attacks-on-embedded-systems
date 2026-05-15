@@ -1,5 +1,5 @@
 import os
-import subprocess
+import paramiko
 from flask import Blueprint, render_template, request, flash, session, redirect, url_for
 from ...models import db, Modelo, Dispositivo, User
 
@@ -13,9 +13,10 @@ def index():
         username = "guest"
     else:
         user_id = session.get('user_id')
-        user = User.query.get(user_id)
-        if not user:
+        if not user_id:
             return redirect(url_for('auth.login'))
+            
+        user = User.query.get(user_id)
         username = user.username
         modelos = Modelo.query.filter_by(usuario_id=user_id).all()
         dispositivos = Dispositivo.query.filter_by(usuario_id=user_id).all()
@@ -55,34 +56,36 @@ def index():
             return redirect(url_for("deteccion.index"))
 
         try:
-            subprocess.run(["adb", "start-server"], check=False)
-            #subprocess.run(["adb", "devices"], check=False)
-
-            target = f"{device_ip}:5555"
-            con_res = subprocess.run(["adb", "connect", target], capture_output=True, text=True)
+            DEVICE_USER = "root"
+            DEVICE_PASS = "1234root"
             
-            if "cannot connect" in con_res.stdout.lower() or "failed" in con_res.stdout.lower():
-                flash(f"El dispositivo en {device_ip} no está accesible. Comprueba que está encendido y conectado a la red.", "error")
-                return redirect(url_for("deteccion.index"))
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            
+            ssh.connect(device_ip, port=22, username=DEVICE_USER, password=DEVICE_PASS, timeout=10)
 
-            remote_dir = f"/home/{username}/modelos_ia"
-            subprocess.run(["adb", "-s", target, "shell", f"mkdir -p {remote_dir}"], check=False)
+            remote_dir = f"/home/DoSDetectionSystem{username}"
+            ssh.exec_command(f"mkdir -p {remote_dir}")
 
-            push_m = subprocess.run(["adb", "-s", target, "push", ruta_modelo, remote_dir], capture_output=True, text=True)
-            push_f = subprocess.run(["adb", "-s", target, "push", ruta_features, remote_dir], capture_output=True, text=True)
+            sftp = ssh.open_sftp()
+            
+            dest_modelo = f"{remote_dir}/{os.path.basename(ruta_modelo)}"
+            sftp.put(ruta_modelo, dest_modelo)
+            
+            dest_features = f"{remote_dir}/{os.path.basename(ruta_features)}"
+            sftp.put(ruta_features, dest_features)
+            
+            sftp.close()
+            ssh.close()
 
-            if push_m.returncode == 0 and push_f.returncode == 0:
-                flash(f"Modelo transferido con éxito a {device_ip} en {remote_dir}.", "success")
-            else:
-                flash("Error durante la transferencia de archivos al dispositivo.", "error")
-                print(f"Error ADB: {push_m.stderr} | {push_f.stderr}")
+            flash(f"Archivos transferidos con éxito a {device_ip} mediante SSH.", "success")
 
-            subprocess.run(["adb", "disconnect", target], check=False)
-
-        except FileNotFoundError:
-            flash("Error Crítico: El comando ADB no está instalado en el servidor Docker.", "error")
+        except paramiko.AuthenticationException:
+            flash("Error: Credenciales SSH incorrectas (Usuario/Contraseña del dispositivo).", "error")
+        except paramiko.ssh_exception.NoValidConnectionsError:
+            flash(f"No se pudo acceder a la IP {device_ip}. ¿Está conectado a la misma red Wi-Fi?", "error")
         except Exception as e:
-            flash(f"Ocurrió un error inesperado al contactar con el M5Stack: {str(e)}", "error")
+            flash(f"Error inesperado en la conexión: {str(e)}", "error")
 
         return redirect(url_for("deteccion.index"))
 
