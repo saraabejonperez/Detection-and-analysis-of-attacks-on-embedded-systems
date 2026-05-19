@@ -5,7 +5,7 @@
 
 <div style="padding: 40px 60px; max-width: 1000px; margin: 0 auto;">
     <h2 style="color: white; margin-bottom: 20px; font-size: 32px; letter-spacing: 1px;">Despliegue y Detección</h2>
-    <p style="color: #9ca3af; margin-bottom: 40px;">Vincula un modelo de IA entrenado a un dispositivo Edge (M5Stack) para iniciar la detección de anomalías de red en tiempo real.</p>
+    <!-- <p style="color: #9ca3af; margin-bottom: 40px;">Vincula un modelo de IA entrenado a un dispositivo Edge (M5Stack) para iniciar la detección de anomalías de red en tiempo real.</p> -->
 
     <div id="setup-section" class="card" style="padding: 40px;">
         <form id="transfer-form" method="POST" action="{{ url_for('deteccion.index') }}" style="display: flex; flex-direction: column; gap: 30px;">
@@ -168,16 +168,24 @@
         formData.append('device_user', sshUserSelected);
         formData.append('device_pass', sshPassSelected);
 
-        fetch(form.action, {
+        fetch('/api/transfer', {
             method: 'POST',
-            body: formData,
-            redirect: 'follow'
-        }).then(response => {
-            document.getElementById('setup-section').style.display = 'none';
-            document.getElementById('lab-section').style.display = 'block';
-            initChart();
-        }).catch(err => {
-            alert("Error al comunicar con el servidor.");
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "error") {
+                mostrarAlertaFlash("Error de conexión: " + data.message);
+                btn.innerHTML = '<i class="fi fi-rr-rocket-lunch"></i> Transferir e Iniciar Laboratorio';
+                btn.disabled = false;
+            } else {
+                document.getElementById('setup-section').style.display = 'none';
+                document.getElementById('lab-section').style.display = 'block';
+                initChart();
+            }
+        })
+        .catch(err => {
+            mostrarAlertaFlash("Error crítico al comunicar con el servidor.");
             btn.innerHTML = '<i class="fi fi-rr-rocket-lunch"></i> Transferir e Iniciar Laboratorio';
             btn.disabled = false;
         });
@@ -307,6 +315,40 @@
         const timeStr = new Date().toLocaleTimeString();
         consola.innerHTML += `<span style="color: ${color};">${prefix} ${timeStr} - ${message}</span><br>`;
         consola.scrollTop = consola.scrollHeight;
+    }
+
+    function mostrarAlertaFlash(mensaje, categoria) {
+        const flashContainer = document.createElement('div');
+        flashContainer.style.position = 'fixed';
+        flashContainer.style.top = '20px';
+        flashContainer.style.left = '50%';
+        flashContainer.style.transform = 'translateX(-50%)';
+        flashContainer.style.zIndex = '9999';
+        flashContainer.style.minWidth = '300px';
+        flashContainer.style.textAlign = 'center';
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${categoria}`;
+        alertDiv.style.padding = '10px';
+        alertDiv.style.marginBottom = '10px';
+        alertDiv.style.borderRadius = '6px';
+        alertDiv.style.fontWeight = 'bold';
+        
+        if (categoria === 'error') {
+            alertDiv.style.backgroundColor = '#fef2f2';
+            alertDiv.style.color = '#991b1b';
+            alertDiv.style.border = '1px solid #f87171';
+        }
+        
+        alertDiv.innerText = mensaje;
+        flashContainer.appendChild(alertDiv);
+        document.body.appendChild(flashContainer);
+
+        setTimeout(() => {
+            alertDiv.style.transition = "opacity 0.5s ease";
+            alertDiv.style.opacity = "0";
+            setTimeout(() => flashContainer.remove(), 500);
+        }, 3000);
     }
 </script>
 {% endblock %}

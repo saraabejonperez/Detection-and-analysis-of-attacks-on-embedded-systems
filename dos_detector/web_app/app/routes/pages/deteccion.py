@@ -1,4 +1,6 @@
 import os, paramiko, time, pandas as pd
+from datetime import datetime
+import pytz
 from flask import Blueprint, current_app, render_template, request, flash, session, redirect, url_for, jsonify
 from ...models import db, Modelo, Dispositivo, User
 
@@ -22,83 +24,76 @@ def index():
         modelos = Modelo.query.filter_by(usuario_id=user_id).all()
         dispositivos = Dispositivo.query.filter_by(usuario_id=user_id).all()
 
-    if request.method == "POST":
-        model_id = request.form.get("model_id")
-        device_id = request.form.get("device_id")
-
-        if model_id is None or device_id is None or model_id == "" or device_id == "":
-            flash("Debes seleccionar un modelo y un dispositivo.", "error")
-            return redirect(url_for("deteccion.index"))
-
-        ruta_modelo, ruta_features, device_ip = None, None, None
-        
-        try:
-            if session.get('guest'):
-                idx_m, idx_d = int(model_id), int(device_id)
-                ruta_modelo = modelos[idx_m]['ruta_archivo']
-                ruta_features = modelos[idx_m]['ruta_features']
-                device_ip = dispositivos[idx_d]['ip']
-            else:
-                modelo_db = Modelo.query.filter_by(id=model_id, usuario_id=user_id).first()
-                disp_db = Dispositivo.query.filter_by(id=device_id, usuario_id=user_id).first()
-                if modelo_db and disp_db:
-                    ruta_modelo = modelo_db.ruta_archivo
-                    ruta_features = modelo_db.archivos_config[0].ruta_archivo if modelo_db.archivos_config else None
-                    device_ip = disp_db.ip
-        except Exception:
-            flash("Error al recuperar los datos seleccionados.", "error")
-            return redirect(url_for("deteccion.index"))
-
-        if not ruta_modelo or not os.path.exists(ruta_modelo) or not ruta_features or not os.path.exists(ruta_features):
-            flash("Los archivos del modelo no se encuentran en el servidor.", "error")
-            return redirect(url_for("deteccion.index"))
-        if not device_ip:
-            flash("El dispositivo no tiene una IP válida.", "error")
-            return redirect(url_for("deteccion.index"))
-
-        try:
-            DEVICE_USER = request.form.get("device_user", "root")
-            DEVICE_PASS = request.form.get("device_pass", "")
-            
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            
-            ssh.connect(device_ip, port=22, username=DEVICE_USER, password=DEVICE_PASS, timeout=10)
-
-            remote_dir = f"/home/DoSDetectionSystem/{username}"
-            ssh.exec_command(f"mkdir -p {remote_dir}")
-
-            sftp = ssh.open_sftp()
-            
-            dest_modelo = f"{remote_dir}/{os.path.basename(ruta_modelo)}"
-            sftp.put(ruta_modelo, dest_modelo)
-            
-            dest_features = f"{remote_dir}/{os.path.basename(ruta_features)}"
-            sftp.put(ruta_features, dest_features)
-
-            ruta_script_local = os.path.join(current_app.root_path, 'scripts', 'detection_edge.py')
-            
-            if os.path.exists(ruta_script_local):
-                dest_script = f"{remote_dir}/detection_edge.py"
-                sftp.put(ruta_script_local, dest_script)
-            else:
-                flash("Advertencia: No se encontró detection_edge.py en el servidor web. La detección fallará.", "warning")
-            
-            sftp.close()
-            ssh.close()
-
-            flash(f"Archivos transferidos con éxito a {device_ip} mediante SSH.", "success")
-
-        except paramiko.AuthenticationException:
-            flash("Error: Credenciales SSH incorrectas (Usuario/Contraseña del dispositivo).", "error")
-        except paramiko.ssh_exception.NoValidConnectionsError:
-            flash(f"No se pudo acceder a la IP {device_ip}. ¿Está conectado a la misma red Wi-Fi?", "error")
-        except Exception as e:
-            flash(f"Error inesperado en la conexión: {str(e)}", "error")
-
-        return redirect(url_for("deteccion.index"))
-
     return render_template("deteccion.html", modelos=modelos, dispositivos=dispositivos)
+    
+@deteccion_bp.route("/api/transfer", methods=["POST"])
+def api_transfer():
+    model_id = request.form.get("model_id")
+    device_id = request.form.get("device_id")
+    device_user = request.form.get("device_user", "root")
+    device_pass = request.form.get("device_pass", "")
+
+    if not model_id or not device_id:
+        return jsonify({"status": "error", "message": "Debes seleccionar un modelo y un dispositivo."}), 400
+
+    username = session.get('username', 'guest')
+    user_id = session.get('user_id')
+    ruta_modelo, ruta_features, device_ip = None, None, None
+
+    try:
+        if session.get('guest'):
+            idx_m, idx_d = int(model_id), int(device_id)
+            modelos = session.get('guest_models', [])
+            dispositivos = session.get('guest_devices', [])
+            ruta_modelo = modelos[idx_m]['ruta_archivo']
+            ruta_features = modelos[idx_m]['ruta_features']
+            device_ip = dispositivos[idx_d]['ip']
+        else:
+            modelo_db = Modelo.query.filter_by(id=model_id, usuario_id=user_id).first()
+            disp_db = Dispositivo.query.filter_by(id=device_id, usuario_id=user_id).first()
+            if modelo_db and disp_db:
+                ruta_modelo = modelo_db.ruta_archivo
+                ruta_features = modelo_db.archivos_config[0].ruta_archivo if modelo_db.archivos_config else None
+                device_ip = disp_db.ip
+
+                modelo_db.fecha_ultimo_uso = datetime.now(pytz.timezone('Europe/Madrid'))
+                disp_db.fecha_ultimo_uso = datetime.now(pytz.timezone('Europe/Madrid'))
+                db.session.commit()
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"Error en base de datos: {str(e)}"}), 500
+
+    if not ruta_modelo or not os.path.exists(ruta_modelo):
+        return jsonify({"status": "error", "message": "El modelo no se encuentra en el servidor."}), 404
+    if not device_ip:
+        return jsonify({"status": "error", "message": "El dispositivo no tiene una IP válida."}), 400
+
+    # Lógica SSH
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(device_ip, port=22, username=device_user, password=device_pass, timeout=10)
+
+        remote_dir = f"/home/DoSDetectionSystem/{username}"
+        ssh.exec_command(f"mkdir -p {remote_dir}")
+
+        sftp = ssh.open_sftp()
+        sftp.put(ruta_modelo, f"{remote_dir}/{os.path.basename(ruta_modelo)}")
+        if ruta_features:
+            sftp.put(ruta_features, f"{remote_dir}/{os.path.basename(ruta_features)}")
+
+        ruta_script = os.path.join(current_app.root_path, 'scripts', 'detection_edge.py')
+        if os.path.exists(ruta_script):
+            sftp.put(ruta_script, f"{remote_dir}/detection_edge.py")
+
+        sftp.close()
+        ssh.close()
+
+        return jsonify({"status": "success", "message": "Archivos transferidos con éxito."}), 200
+
+    except paramiko.AuthenticationException:
+        return jsonify({"status": "error", "message": "Credenciales SSH incorrectas."}), 401
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"No se pudo acceder a {device_ip} (Revisa conexión y red)"}), 500
 
 @deteccion_bp.route("/api/alarm", methods=["POST"])
 def receive_alarm():

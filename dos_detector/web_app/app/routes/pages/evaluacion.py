@@ -2,6 +2,8 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
+from datetime import datetime
+import pytz
 from flask import Blueprint, render_template, request, flash, session, current_app
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from ...models import db, Modelo
@@ -41,6 +43,8 @@ def index():
                 ruta_modelo = modelo_db.ruta_archivo
                 if modelo_db.archivos_config:
                     ruta_features = modelo_db.archivos_config[0].ruta_archivo
+                modelo_db.fecha_ultimo_uso = datetime.now(pytz.timezone('Europe/Madrid'))
+                db.session.commit()
 
         if not ruta_modelo or not os.path.exists(ruta_modelo):
             flash("El archivo del modelo no se encuentra en el servidor.", "error")
