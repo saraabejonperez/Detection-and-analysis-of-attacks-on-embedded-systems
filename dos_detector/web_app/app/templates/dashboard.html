@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="action-blocks" style="height: 100%; display: flex; align-items: center; justify-content: center; gap: 80px;">
-    <button class="action-card" onclick="location.href='/evaluacion'">
-        <h3>EVALUACIÓN</h3>
-    </button>
+<div class="action-blocks" style="height: 100%; display: flex; align-items: center; justify-content: center; gap: 200px;">
     
-    <button class="action-card" onclick="location.href='/deteccion'">
-        <h3>DETECCIÓN</h3>
-    </button>
+    <a href="{{ url_for('evaluacion.index') }}" class="cyber-card">
+        <div class="cyber-card-inner">
+            <img src="{{ url_for('static', filename='img/evaluacion.png') }}" class="cyber-icon-img" alt="Icono Evaluación">
+            <h3 class="cyber-title">Evaluación</h3>
+        </div>
+    </a>
+    
+    <a href="{{ url_for('deteccion.index') }}" class="cyber-card">
+        <div class="cyber-card-inner">
+            <img src="{{ url_for('static', filename='img/deteccion.png') }}" class="cyber-icon-img" alt="Icono Detección">
+            <h3 class="cyber-title">Detección</h3>
+        </div>
+    </a>
+
 </div>
 {% endblock %}

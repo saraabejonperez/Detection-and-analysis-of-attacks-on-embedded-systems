@@ -563,31 +563,54 @@ nav a:hover {
     flex-grow: 1;
 }
 
-.action-card {
-    width: 260px;
-    height: 260px;
-    background-color: #013d76;
-    border-radius: 25px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 0;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+.cyber-card {
+    text-decoration: none;
+    display: inline-block;
+    background-color: #08d5fea8;
+    padding: 12px;
+    border-radius: 30px; 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.action-card:hover {
+.cyber-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-    background-color: #085294;
+    box-shadow: 0 15px 35px rgba(0, 210, 255, 0.4);
 }
 
-.action-card h3 {
-    font-size: 26px;
-    letter-spacing: 2px;
+.cyber-card-inner {
+    background-color: #0f172ad3;
+    border-radius: 20px; 
+    width: 220px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.cyber-icon {
+    font-size: 80px; 
+    color: #72e0ff;
+    margin-bottom: 25px;
+}
+
+.cyber-icon-img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 15px;
+    object-fit: contain;
+    filter: invert(75%) sepia(54%) saturate(452%) hue-rotate(162deg) brightness(101%) contrast(106%);
+}
+
+.cyber-title {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
     margin: 0;
 }
 
@@ -599,7 +622,7 @@ nav a:hover {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    color: #00041f;/* #e5e7eb;*/
+    color: #00041f;
 }
 
 /* Subir modelo */
