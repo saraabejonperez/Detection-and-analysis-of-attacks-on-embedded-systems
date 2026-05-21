@@ -80,7 +80,7 @@
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
             <div class="metric" style="padding: 20px; text-align: center; background: rgba(2, 6, 23, 0.6);">
                 <h4 style="font-size: 16px; color: #08d6fe; margin-bottom: 10px;">TIEMPO TOTAL</h4>
-                <p style="font-size: 32px; color: white; font-weight: bold;"><span id="res-tiempo">0</span>s</p>
+                <p style="font-size: 32px; color: white; font-weight: bold;"><span id="res-tiempo">0s</span></p>
             </div>
             <div class="metric" style="padding: 20px; text-align: center; background: rgba(2, 6, 23, 0.6);">
                 <h4 style="font-size: 16px; color: #08d6fe; margin-bottom: 10px;">FLUJOS PROCESADOS</h4>
@@ -133,6 +133,7 @@
     let modelIdSelected = "";
     let sshUserSelected = "";
     let sshPassSelected = "";
+    let tiempoInicioDeteccion = 0;
     const consola = document.getElementById('alarm-console');
 
     document.getElementById('transfer-form').addEventListener('submit', function(e) {
@@ -234,6 +235,8 @@
 
         logConsole("Iniciando motor de detección en el Edge. Analizando tráfico de red...", "#fbbf24");
 
+        tiempoInicioDeteccion = Date.now();
+
         fetch('/deteccion/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -295,7 +298,19 @@
             document.getElementById('btn-stop').style.display = 'none';
             document.getElementById('btn-start').style.display = 'none';
 
-            document.getElementById('res-tiempo').innerText = metrics.duracion_segundos;
+            let totalSegundos = Math.floor((Date.now() - tiempoInicioDeteccion) / 1000);
+            let horas = Math.floor(totalSegundos / 3600);
+            let minutos = Math.floor((totalSegundos % 3600) / 60);
+            let segundos = totalSegundos % 60;
+            let duracionReal = "";
+            if (horas > 0) {
+                duracionReal += horas + "h ";
+            }
+            if (minutos > 0 || horas > 0) {
+                duracionReal += minutos + "m ";
+            }
+            duracionReal += segundos + "s";
+            document.getElementById('res-tiempo').innerText = duracionReal;
             document.getElementById('res-flujos').innerText = metrics.flujos_totales;
             document.getElementById('res-latencia').innerText = metrics.latencia_media;
             document.getElementById('res-benigno').innerText = metrics.benignos;

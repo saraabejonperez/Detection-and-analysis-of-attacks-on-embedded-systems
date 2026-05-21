@@ -98,7 +98,7 @@ def api_transfer():
 @deteccion_bp.route("/api/alarm", methods=["POST"])
 def receive_alarm():
     data = request.json
-    device_ip = request.remote_addr
+    device_ip = data.get("device_ip", request.remote_addr)
     
     if device_ip not in ALARMAS_ACTIVAS:
         ALARMAS_ACTIVAS[device_ip] = []
@@ -172,8 +172,6 @@ def start_detection():
         
         ssh.exec_command(comando)
         ssh.close()
-
-        session[f'start_time_{device_ip}'] = time.time()
         
         return jsonify({"status": "success", "message": "Detección iniciada"}), 200
 
@@ -193,9 +191,6 @@ def stop_detection():
     
     local_results_path = os.path.join(current_app.root_path, '..', 'data', f"temp_results_{device_ip}.csv")
 
-    start_time = session.get(f'start_time_{device_ip}')
-    duracion = round(time.time() - start_time, 2) if start_time else 0.0
-
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -207,6 +202,7 @@ def stop_detection():
         try:
             sftp.get(results_remote_path, local_results_path)
         except IOError:
+            current_app.logger.error(f"Error descargando CSV: {e}")
             sftp.close()
             ssh.close()
             return jsonify({
@@ -236,8 +232,7 @@ def stop_detection():
             "flujos_totales": flujos_totales,
             "ataques": ataques,
             "benignos": benignos,
-            "latencia_media": latencia_media,
-            "duracion_segundos": duracion
+            "latencia_media": latencia_media
         }), 200
 
     except Exception as e:

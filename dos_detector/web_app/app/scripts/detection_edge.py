@@ -52,7 +52,7 @@ def classify_flow(flow):
         
         if label == "DoS ATTACK":
             try:
-                requests.post(args.webhook, json={"src": flow.src_ip, "score": float(prediction)}, timeout=1)
+                requests.post(args.webhook, json={"device_ip": args.ip, "src": flow.src_ip, "score": float(prediction)}, timeout=1)
             except requests.exceptions.RequestException as e:
                 logging.warning(f"No se pudo enviar alarma a la web: {e}")
 
@@ -61,7 +61,7 @@ def classify_flow(flow):
 
 def main():
     logging.info("Iniciando captura con NFStream...")
-    streamer = NFStreamer(source="eth0", statistical_analysis=True, idle_timeout=10, active_timeout=30)
+    streamer = NFStreamer(source="wlan0", statistical_analysis=True, idle_timeout=10, active_timeout=30)
     try:
         for flow in streamer:
             if flow.dst_ip == args.ip:
