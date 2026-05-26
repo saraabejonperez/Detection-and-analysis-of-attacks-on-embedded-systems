@@ -1,7 +1,7 @@
-import os, paramiko, time, pandas as pd
+import os, paramiko, pandas as pd
 from datetime import datetime
 import pytz
-from flask import Blueprint, current_app, render_template, request, flash, session, redirect, url_for, jsonify
+from flask import Blueprint, current_app, render_template, request, session, redirect, url_for, jsonify
 from ...models import db, Modelo, Dispositivo, User
 
 deteccion_bp = Blueprint("deteccion", __name__)
@@ -13,14 +13,12 @@ def index():
     if session.get('guest'):
         modelos = session.get('guest_models', [])
         dispositivos = session.get('guest_devices', [])
-        username = "guest"
     else:
         user_id = session.get('user_id')
         if not user_id:
             return redirect(url_for('auth.login'))
             
         user = User.query.get(user_id)
-        username = user.username
         modelos = Modelo.query.filter_by(usuario_id=user_id).all()
         dispositivos = Dispositivo.query.filter_by(usuario_id=user_id).all()
 

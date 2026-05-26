@@ -1,5 +1,4 @@
 import os
-import uuid
 from datetime import datetime
 import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
@@ -82,8 +81,6 @@ def upload():
 
 @modelos_bp.route("/modelos/delete/<int:model_id>", methods=["POST"])
 def delete(model_id):
-    upload_folder = os.path.join(current_app.root_path, '..', 'uploads', 'modelos')
-    
     if session.get('guest'):
         guest_models = session.get('guest_models', [])
         if 0 <= model_id < len(guest_models):
