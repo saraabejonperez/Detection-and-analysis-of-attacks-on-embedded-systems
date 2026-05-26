@@ -13,6 +13,14 @@ class ModeloInvitado:
         self.fecha_subida = datetime.strptime(fecha_subida, '%Y-%m-%d %H:%M:%S')
         self.fecha_ultimo_uso = self.fecha_subida
 
+def allowed_model_file(filename):
+    """Comprueba si el archivo del modelo tiene la extensión permitida (.pkl)"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pkl'}
+
+def allowed_features_file(filename):
+    """Comprueba si el archivo de configuración tiene la extensión permitida (.npy)"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'npy'}
+
 @modelos_bp.route("/modelos", methods=["GET"])
 def index():
     if session.get('guest'):
@@ -28,6 +36,8 @@ def index():
 
 @modelos_bp.route("/modelos/upload", methods=["POST"])
 def upload():
+    next_page = request.form.get('next', 'modelos.index')
+
     if 'archivo_modelo' not in request.files or 'archivo_features' not in request.files:
         flash("Faltan archivos requeridos.", "error")
         return redirect(url_for("modelos.index"))
@@ -38,6 +48,14 @@ def upload():
     if file_model.filename == '' or file_features.filename == '':
         flash("Debes seleccionar ambos archivos.", "error")
         return redirect(url_for("modelos.index"))
+    
+    if not allowed_model_file(file_model.filename):
+        flash('Formato de modelo no válido. Solo se permiten archivos .pkl', 'error')
+        return redirect(url_for(next_page))
+
+    if not allowed_features_file(file_features.filename):
+        flash('Formato de configuración no válido. Solo se permiten archivos .npy', 'error')
+        return redirect(url_for(next_page))
     
     timestamp = int(datetime.now(pytz.timezone('Europe/Madrid')).timestamp())
     upload_folder = os.path.join(current_app.root_path, '..', 'uploads', 'modelos')

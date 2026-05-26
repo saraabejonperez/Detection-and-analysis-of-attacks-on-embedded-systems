@@ -58,8 +58,8 @@
         <h3>Subir Nuevo Modelo</h3>
         <form action="{{ url_for('modelos.upload') }}" method="POST" enctype="multipart/form-data">
             <div class="form-group" style="margin-bottom: 20px;">
-                <label for="archivo_modelo" style="margin-bottom: 10px;">1. Archivo del Modelo (.h5, .pkl...)</label>
-                <input type="file" name="archivo_modelo" id="archivo_modelo" required>
+                <label for="archivo_modelo" style="margin-bottom: 10px;">1. Archivo del Modelo (.pkl)</label>
+                <input type="file" name="archivo_modelo" id="archivo_modelo" accept=".pkl" required>
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
