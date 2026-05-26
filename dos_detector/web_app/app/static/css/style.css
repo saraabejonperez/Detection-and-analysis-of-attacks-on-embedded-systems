@@ -11,7 +11,7 @@
 
 /* Tipografía y Fondo General */
 body {
-    font-family: 'Montserrat', "Segoe UI", Tahoma, sans-serif;
+    font-family: 'Montserrat';/*, "Segoe UI", Tahoma, sans-serif;*/
     background-color: #0f172a;
     color: #e5e7eb;
 }
@@ -62,10 +62,11 @@ button:hover {
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 .card h2 {
     margin-bottom: 15px;
     color: #60a5fa;
-}
+}*/
 
 /* Grid de estado y métricas */
 .status {
@@ -98,18 +99,20 @@ button:hover {
 .status-bad { color: #ef4444; }
 .status-neutral { color: #eab308; }
 
-/* Alertas y Mensajes Flash */
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- */
+/* Alertas y Mensajes Flash 
 #alarms_list {
     list-style: none;
-}
+}*/
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 #alarms_list li {
     background-color: #020617;
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
     border-left: 5px solid #ef4444;
-}
+}*/
 
 .alert {
     background-color: rgba(240, 230, 140, 0.925);
@@ -143,29 +146,33 @@ header {
     border-bottom: 1px solid #1f2937;
 }
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 header h1 {
     font-size: 22px;
     color: #60a5fa;
-}
+}*/
 
-/* Navbar */
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- */
+/* Navbar 
 nav {
     background-color: #020617;
     padding: 10px 20px;
     display: flex;
     gap: 20px;
     border-bottom: 1px solid #1f2937;
-}
+}*/
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 nav a {
     color: #9ca3af;
     text-decoration: none;
     font-weight: 500;
-}
+}*/
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 nav a:hover {
     color: #60a5fa;
-}
+}*/
 
 
 /* ======================
@@ -320,11 +327,12 @@ nav a:hover {
    DASHBOARD PRINCIPAL
    =================== */
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 .app-container {
     padding: 0;
     height: 100vh;
     overflow: hidden;
-}
+}*/
 
 .app-layout {
     display: flex;
@@ -591,11 +599,12 @@ nav a:hover {
     box-sizing: border-box;
 }
 
+/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
 .cyber-icon {
     font-size: 80px; 
     color: #72e0ff;
     margin-bottom: 25px;
-}
+}*/
 
 .cyber-icon-img {
     width: 150px;
