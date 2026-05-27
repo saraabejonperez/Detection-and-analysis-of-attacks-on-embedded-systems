@@ -44,6 +44,7 @@ def login():
             session.permanent = False
             session['user_id'] = user.id
             session['username'] = user.username
+            session['is_admin'] = user.is_admin
             return redirect(url_for("dashboard.dashboard"))
         else:
             flash("Nombre de usuario o contraseña erróneos.", "error")

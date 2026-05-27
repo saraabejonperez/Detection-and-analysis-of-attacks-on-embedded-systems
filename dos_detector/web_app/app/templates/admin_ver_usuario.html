@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 40px 60px; max-width: 1200px; margin: 0 auto;">
+    
+    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+        <a href="{{ url_for('admin.gestion_usuarios') }}" style="color: #9ca3af; text-decoration: none; font-size: 20px;" title="Volver"><i class="fi fi-rr-arrow-left"></i></a>
+        <div>
+            <h2 style="color: white; margin: 0; font-size: 28px;">Inspección de Usuario: <span style="color: #08d6fe;">{{ usuario.username }}</span></h2>
+            <p style="color: #9ca3af; margin: 5px 0 0 0; font-size: 14px;">ID de cuenta: #{{ usuario.id }} | Rol: {% if usuario.is_admin %}<span style="color:#ef4444; font-weight:bold;">Administrador</span>{% else %}Usuario estándar{% endif %}</p>
+        </div>
+    </div>
+
+    <div class="card" style="padding: 30px; margin-bottom: 40px;">
+        <h3 style="color: #08d6fe; margin-bottom: 20px; font-size: 20px;"><i class="fi fi-rr-cubes"></i> Modelos del Usuario</h3>
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Nombre del Modelo</th>
+                    <th>Fecha de Carga</th>
+                    <th>Último Uso</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for modelo in usuario.modelos %}
+                <tr>
+                    <td style="font-weight: bold; color: white;">{{ modelo.nombre }}</td>
+                    <td>{{ modelo.fecha_subida.strftime('%d/%m/%Y %H:%M') if modelo.fecha_subida else '---' }}</td>
+                    <td>{{ modelo.fecha_ultimo_uso.strftime('%d/%m/%Y %H:%M') if modelo.fecha_ultimo_uso else '---' }}</td>
+                    <td style="text-align: center;">
+                        <form action="{{ url_for('admin.delete_model_admin', model_id=modelo.id) }}" method="POST"
+                              onsubmit="confirmAction(event, this, '¿Eliminar este modelo del inventario del usuario? Esta acción es irreversible.');">
+                            <button type="submit" class="delete-btn" title="Forzar eliminación de modelo">
+                                <i class="fi fi-tr-trash-xmark"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; opacity: 0.6;">Este usuario no ha subido ningún modelo de IA.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="padding: 30px;">
+        <h3 style="color: #08d6fe; margin-bottom: 20px; font-size: 20px;"><i class="fi fi-tr-microchip"></i> Dispositivos del Usuario</h3>
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Nombre del Dispositivo</th>
+                    <th>Dirección IP</th>
+                    <th>Fecha de Registro</th>
+                    <th>Último Uso</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dispositivo in usuario.dispositivos %}
+                <tr>
+                    <td style="font-weight: bold; color: white;">{{ dispositivo.nombre }}</td>
+                    <td style="font-family: monospace;">{{ dispositivo.ip }}</td>
+                    <td>{{ dispositivo.fecha_registro.strftime('%d/%m/%Y %H:%M') if dispositivo.fecha_registro else '---' }}</td>
+                    <td>{{ dispositivo.fecha_ultimo_uso.strftime('%d/%m/%Y %H:%M') if dispositivo.fecha_ultimo_uso else '---' }}</td>
+                    <td style="text-align: center;">
+                        <form action="{{ url_for('admin.delete_device_admin', device_id=dispositivo.id) }}" method="POST"
+                              onsubmit="confirmAction(event, this, '¿Desvincular este dispositivo de la cuenta del usuario?');">
+                            <button type="submit" class="delete-btn" title="Forzar eliminación de dispositivo">
+                                <i class="fi fi-tr-trash-xmark"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px; opacity: 0.6;">Este usuario no tiene ningún dispositivo M5Stack registrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

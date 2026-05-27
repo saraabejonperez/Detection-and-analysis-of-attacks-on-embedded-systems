@@ -62,6 +62,13 @@
                 </div>
 
                 <div class="sidebar-bottom">
+                    {% if session.get('is_admin') %}
+                    <button class="side-btn" onclick="location.href='/admin/usuarios'" title="Admin">
+                        <span class="icon"><i class="fi fi-rr-shield-check" style="color: #ef4444;"></i></span>
+                        <span class="text" style="color: #fca5a5;">Gestión Usuarios</span>
+                    </button>
+                    {% endif %}
+                    
                     <button class="side-btn {% if session.get('guest') %}inactive-btn{% endif %}" {% if not session.get('guest') %}onclick="location.href='/cuenta'"{% endif %} title="{% if session.get('guest') %}Invitado{% else %}Cuenta{% endif %}">
                         <span class="icon"><i class="fi fi-rr-user"></i></span>
                         <span class="text">

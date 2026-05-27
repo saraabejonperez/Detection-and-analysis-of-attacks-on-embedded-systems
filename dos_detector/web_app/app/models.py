@@ -11,6 +11,7 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     fecha_registro = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'<User {self.username}>'
