@@ -4,8 +4,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div style="padding: 40px 60px; max-width: 1000px; margin: 0 auto;">
-    <h2 style="color: white; margin-bottom: 20px; font-size: 32px; letter-spacing: 1px;">Despliegue y Detección</h2>
-    <!-- <p style="color: #9ca3af; margin-bottom: 40px;">Vincula un modelo de IA entrenado a un dispositivo Edge (M5Stack) para iniciar la detección de anomalías de red en tiempo real.</p> -->
+    <h2><span style="color: #08d6fe; background-color: #0f172ad3; padding: 5px 10px; border-radius: 6px; font-size: 36px; letter-spacing: 1px;">Despliegue y Detección</span></h2>
+    
+    <div style="margin-top: 10px; margin-bottom: 30px; padding: 10px 10px; background: rgba(2, 6, 23, 0.726); border-left: 4px solid #08d6fe; border-radius: 6px; display: flex; align-items: center; gap: 15px;">
+        <i class="fi fi-rr-info" style="color: #08d6fe; font-size: 20px;"></i>
+        <p style="color: white; font-size: 16px; margin: 0; line-height: 1.5;">
+            Vincula un modelo de IA entrenado a un dispositivo (M5Stack) para iniciar la detección de anomalías de red en tiempo real.
+        </p>
+    </div>
 
     <div id="setup-section" class="card" style="padding: 40px;">
         <form id="transfer-form" method="POST" action="{{ url_for('deteccion.index') }}" style="display: flex; flex-direction: column; gap: 30px;">
@@ -14,8 +20,8 @@
                 <label style="color: #08d6fe; display: block; margin-bottom: 15px; font-weight: bold; font-size: 18px;">
                     <i class="fi fi-rr-cubes"></i> 1. Selecciona el Modelo
                 </label>
-                <select name="model_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
-                    <option value="" disabled selected style="background: #0f172a;">-- Modelos disponibles --</option>
+                <select name="model_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; opacity: 0.7; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
+                    <option value="" disabled selected style="background: #0f172a;"> - Modelos disponibles - </option>
                     {% for modelo in modelos %}
                         {% set m_id = loop.index0 if session.get('guest') else modelo.id %}
                         <option value="{{ m_id }}" style="background: #0f172a; color: white;">{{ modelo.nombre }}</option>
@@ -30,8 +36,8 @@
                 <label style="color: #08d6fe; display: block; margin-bottom: 15px; font-weight: bold; font-size: 18px;">
                     <i class="fi fi-tr-microchip"></i> 2. Selecciona el Dispositivo Destino
                 </label>
-                <select id="device_select" name="device_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
-                    <option value="" disabled selected style="background: #0f172a;">-- Dispositivos registrados --</option>
+                <select id="device_select" name="device_id" required style="width: 100%; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.3); color: white; opacity: 0.7; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
+                    <option value="" disabled selected style="background: #0f172a;"> - Dispositivos registrados - </option>
                     {% for dispositivo in dispositivos %}
                         {% set d_id = loop.index0 if session.get('guest') else dispositivo.id %}
                         <option value="{{ d_id }}" style="background: #0f172a; color: white;">{{ dispositivo.nombre }} (IP: {{ dispositivo.ip }})</option>
@@ -53,7 +59,7 @@
 
     <div id="lab-section" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h3 style="color: white; font-size: 24px;"><i class="fi fi-rr-dashboard"></i> Laboratorio de Detección</h3>
+            <h3 style="color: white; font-size: 24px;"><i class="fi fi-rr-dashboard"></i> LABORATORIO DE DETECCIÓN</h3>
             <div style="display: flex; gap: 15px;">
                 <button id="btn-start" onclick="startDeteccion()" style="background: #059669; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
                     <i class="fi fi-rr-play"></i> INICIAR
@@ -98,7 +104,7 @@
                 <p style="font-size: 36px; color: #10b981; font-weight: bold;" id="res-benigno">0</p>
             </div>
             <div class="metric" style="padding: 20px; text-align: center; border: 1px solid #dc2626;">
-                <h4 style="font-size: 18px; color: #fecaca; margin-bottom: 10px;">ATAQUES BLOQUEADOS</h4>
+                <h4 style="font-size: 18px; color: #fecaca; margin-bottom: 10px;">ATAQUES DETECTADOS</h4>
                 <p style="font-size: 36px; color: #ef4444; font-weight: bold;" id="res-ataques">0</p>
             </div>
         </div>

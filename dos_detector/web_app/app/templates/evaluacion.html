@@ -2,15 +2,21 @@
 
 {% block content %}
 <div style="padding: 40px 60px;">
-    <h2 style="color: white; margin-bottom: 20px; font-size: 32px; letter-spacing: 1px;">Evaluación de Modelos</h2>
-    <!-- <p style="color: #9ca3af; margin-bottom: 40px;">Selecciona un modelo cargado para someterlo a pruebas de estrés con nuestro dataset y comprobar su eficacia detectando anomalías, o sube uno nuevo directamente.</p> -->
+    <h2><span style="color: #08d6fe; background-color: #0f172ad3; padding: 2px 10px; border-radius: 6px; font-size: 36px; letter-spacing: 1px;">Evaluación de Modelos</span></h2>
+    
+    <div style="margin-top: 10px; margin-bottom: 30px; padding: 10px 10px; background: rgba(2, 6, 23, 0.726); border-left: 4px solid #08d6fe; border-radius: 6px; display: flex; align-items: center; gap: 15px;">
+        <i class="fi fi-rr-info" style="color: #08d6fe; font-size: 20px;"></i>
+        <p style="color: white; font-size: 16px; margin: 0; line-height: 1.5;">
+            Selecciona un modelo cargado para someterlo a evaluación y comprobar su eficacia detectando anomalías.
+        </p>
+    </div>
 
     <div style="margin-bottom: 40px; display: flex; gap: 10px; align-items: center; background-color: rgba(2, 6, 23, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px; backdrop-filter: blur(5px);">
         
         <form method="POST" action="{{ url_for('evaluacion.index') }}" style="display: flex; gap: 15px; flex-grow: 1; align-items: center;">
             
             <select name="model_id" required style="flex-grow: 1; padding: 12px; border-radius: 8px; background: rgba(0, 0, 0, 0.2); color: white; opacity: 0.7; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 16px; outline: none;">
-                <option value="" disabled selected style="background: #0f172a;">-- Elige un modelo para evaluar --</option>
+                <option value="" disabled selected style="background: #0f172a;"> - Elige un modelo para evaluar - </option>
                 
                 {% for modelo in modelos %}
                     {% set m_id = loop.index0 if session.get('guest') else modelo.id %}
@@ -83,11 +89,11 @@
                     </p>
                 </div>
                 <div class="metric" style="padding: 20px;">
-                    <h3>PRECISION</h3>
+                    <h3 style="color: #08d6fe;">PRECISION</h3>
                     <p style="font-size: 32px; color: rgb(244, 244, 244);">{{ resultados.precision }}%</p>
                 </div>
                 <div class="metric" style="padding: 20px;">
-                    <h3>RECALL</h3>
+                    <h3 style="color: #08d6fe;">RECALL</h3>
                     <p style="font-size: 32px; color: rgb(244, 244, 244);">{{ resultados.recall }}%</p>
                 </div>
             </div>
