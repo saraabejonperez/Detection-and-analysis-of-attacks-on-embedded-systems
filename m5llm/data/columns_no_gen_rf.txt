@@ -31,3 +31,6 @@ source_pcap
 pcap_path
 window_mode
 pcap_sha256
+gt_start_ms
+gt_end_ms
+application_confidence
