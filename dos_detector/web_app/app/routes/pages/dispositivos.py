@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+import pytz
 from ...models import db, Dispositivo
 
 dispositivos_bp = Blueprint("dispositivos", __name__)
@@ -40,10 +41,10 @@ def add():
         session['guest_devices'].append({
             'nombre': nombre,
             'ip': ip,
-            'fecha_registro': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            'fecha_registro': datetime.now(pytz.timezone('Europe/Madrid')).strftime('%Y-%m-%d %H:%M:%S')
         })
         session.modified = True
-        flash("Dispositivo temporal registrado.", "success")
+        flash("Dispositivo registrado con éxito.", "success")
     else:
         user_id = session.get('user_id')
         if not user_id:

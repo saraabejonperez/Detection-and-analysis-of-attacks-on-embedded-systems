@@ -17,8 +17,7 @@ def index():
         user_id = session.get('user_id')
         if not user_id:
             return redirect(url_for('auth.login'))
-            
-        user = User.query.get(user_id)
+        
         modelos = Modelo.query.filter_by(usuario_id=user_id).all()
         dispositivos = Dispositivo.query.filter_by(usuario_id=user_id).all()
 
@@ -65,7 +64,6 @@ def api_transfer():
     if not device_ip:
         return jsonify({"status": "error", "message": "El dispositivo no tiene una IP válida."}), 400
 
-    # Lógica SSH
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -91,7 +89,7 @@ def api_transfer():
     except paramiko.AuthenticationException:
         return jsonify({"status": "error", "message": "Credenciales SSH incorrectas."}), 401
     except Exception as e:
-        return jsonify({"status": "error", "message": f"No se pudo acceder a {device_ip} (Revisa conexión y red)"}), 500
+        return jsonify({"status": "error", "message": f"No se pudo acceder a {device_ip}. Revisa la conexión a la red."}), 500
 
 @deteccion_bp.route("/api/alarm", methods=["POST"])
 def receive_alarm():

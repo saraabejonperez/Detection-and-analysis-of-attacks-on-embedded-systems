@@ -11,7 +11,7 @@
 
 /* Tipografía y Fondo General */
 body {
-    font-family: 'Montserrat';/*, "Segoe UI", Tahoma, sans-serif;*/
+    font-family: 'Montserrat';
     background-color: #0f172a;
     color: #e5e7eb;
 }
@@ -62,12 +62,6 @@ button:hover {
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-.card h2 {
-    margin-bottom: 15px;
-    color: #60a5fa;
-}*/
-
 /* Grid de estado y métricas */
 .status {
     display: grid;
@@ -94,26 +88,12 @@ button:hover {
     margin-top: 5px;
 }
 
-/* Estados de colores */
+/* Estados */
 .status-ok { color: #22c55e; }
 .status-bad { color: #ef4444; }
 .status-neutral { color: #eab308; }
 
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- */
-/* Alertas y Mensajes Flash 
-#alarms_list {
-    list-style: none;
-}*/
-
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-#alarms_list li {
-    background-color: #020617;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    border-left: 5px solid #ef4444;
-}*/
-
+/* Alertas */
 .alert {
     background-color: rgba(240, 230, 140, 0.925);
     color: #fe3939;
@@ -132,47 +112,6 @@ button:hover {
     color: #991b1b;
     border: 1px solid #f87171;
 }
-
-
-/* ===================
-   PÁGINAS SECUNDARIAS
-   =================== */
-
-/* Header */
-header {
-    background-color: #020617;
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #1f2937;
-}
-
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-header h1 {
-    font-size: 22px;
-    color: #60a5fa;
-}*/
-
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- */
-/* Navbar 
-nav {
-    background-color: #020617;
-    padding: 10px 20px;
-    display: flex;
-    gap: 20px;
-    border-bottom: 1px solid #1f2937;
-}*/
-
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-nav a {
-    color: #9ca3af;
-    text-decoration: none;
-    font-weight: 500;
-}*/
-
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-nav a:hover {
-    color: #60a5fa;
-}*/
 
 
 /* ======================
@@ -327,13 +266,6 @@ nav a:hover {
    DASHBOARD PRINCIPAL
    =================== */
 
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-.app-container {
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
-}*/
-
 .app-layout {
     display: flex;
     height: 100vh;
@@ -458,7 +390,6 @@ nav a:hover {
    DASHBOARD PRINCIPAL - Cabecera y menú
    ===================================== */
 
-/* Contenedor App Header */
 .app-header {
     background-color: #00041f !important;
     border-bottom: 1px solid #000600 !important;
@@ -470,7 +401,6 @@ nav a:hover {
     z-index: 5;
 }
 
-/* Título */
 .app-title {
     flex-grow: 1;
     text-align: center;
@@ -599,13 +529,6 @@ nav a:hover {
     box-sizing: border-box;
 }
 
-/* ---- MIRAR SI SE USA EN ALGÚN LADO ---- 
-.cyber-icon {
-    font-size: 80px; 
-    color: #72e0ff;
-    margin-bottom: 25px;
-}*/
-
 .cyber-icon-img {
     width: 150px;
     height: 150px;
@@ -623,9 +546,18 @@ nav a:hover {
     margin: 0;
 }
 
-/* =======
-   MODELOS
-   ======= */
+
+/* ===================
+   PÁGINAS SECUNDARIAS
+   =================== */
+
+header {
+    background-color: #020617;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #1f2937;
+}
+
 .table-header {
     display: flex;
     justify-content: space-between;
@@ -634,7 +566,6 @@ nav a:hover {
     color: #00041f;
 }
 
-/* Subir modelo */
 .action-btn {
     background-color: transparent;
     color: #08d6fe;
@@ -727,7 +658,6 @@ nav a:hover {
     color: white;
 }
 
-/* Eliminar modelo */
 .delete-btn {
     background: transparent;
     border: none;
