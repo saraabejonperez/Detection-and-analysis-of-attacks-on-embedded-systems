@@ -28,7 +28,7 @@ class Modelo(db.Model):
     fecha_subida = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
     fecha_ultimo_uso = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Europe/Madrid')))
 
-    usuario = db.relationship('User', backref=db.backref('modelos', lazy=True))
+    usuario = db.relationship('User', backref=db.backref('modelos', cascade="all, delete-orphan", lazy=True))
 
 class File(db.Model):
     __tablename__ = 'files'
