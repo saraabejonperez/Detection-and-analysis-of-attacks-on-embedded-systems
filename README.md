@@ -43,7 +43,7 @@ La plataforma web del proyecto está desarrollada para ser desplegada mediante c
 ### Pasos para levantar la plataforma web
 1. Clona este repositorio en tu equipo local:
    ```bash
-   git clone [https://github.com/saraabejonperez/Detection-and-analysis-of-attacks-on-embedded-systems.git]([https://github.com/tu-usuario/nombre-del-repositorio.git](https://github.com/saraabejonperez/Detection-and-analysis-of-attacks-on-embedded-systems.git))
+   git clone https://github.com/saraabejonperez/Detection-and-analysis-of-attacks-on-embedded-systems.git
    cd dos_detector
 
 2. Construye y levanta los contenedores en segundo plano:
