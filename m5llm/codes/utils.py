@@ -24,6 +24,7 @@ PATH_DOS = PATH_DATA / 'DenialofService'
 PATH_MODEL = BASE_PATH / 'models'
 PATH_MODEL.mkdir(exist_ok=True)
 
+
 # ================ #
 # =  PARAMETERS  = #
 # ================ #

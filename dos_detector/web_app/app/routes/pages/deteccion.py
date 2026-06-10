@@ -4,12 +4,20 @@ import pytz
 from flask import Blueprint, current_app, render_template, request, session, redirect, url_for, jsonify
 from ...models import db, Modelo, Dispositivo, User
 
+
 deteccion_bp = Blueprint("deteccion", __name__)
 
 ALARMAS_ACTIVAS = {}
 
+
 @deteccion_bp.route("/deteccion", methods=["GET", "POST"])
 def index():
+    """
+    Render the main detection dashboard.
+
+    :return: The rendered HTML template for the detection dashboard.
+    :rtype: str | Response
+    """
     if session.get('guest'):
         modelos = session.get('guest_models', [])
         dispositivos = session.get('guest_devices', [])
@@ -22,9 +30,21 @@ def index():
         dispositivos = Dispositivo.query.filter_by(usuario_id=user_id).all()
 
     return render_template("deteccion.html", modelos=modelos, dispositivos=dispositivos)
-    
+
+
 @deteccion_bp.route("/api/transfer", methods=["POST"])
 def api_transfer():
+    """
+    Transfer machine learning assets to a remote edge device via SSH/SFTP.
+
+    This endpoint retrieves the specified model and optional feature files, 
+    establishes an SSH connection to the target device using provided credentials, 
+    creates the necessary remote directory structure, and uploads the model, 
+    features, and the edge detection script.
+
+    :return: A JSON response indicating the success or failure of the transfer.
+    :rtype: Tuple[Response, int]
+    """
     model_id = request.form.get("model_id")
     device_id = request.form.get("device_id")
     device_user = request.form.get("device_user", "root")
@@ -91,8 +111,18 @@ def api_transfer():
     except Exception as e:
         return jsonify({"status": "error", "message": f"No se pudo acceder a {device_ip}. Revisa la conexión a la red."}), 500
 
+
 @deteccion_bp.route("/api/alarm", methods=["POST"])
 def receive_alarm():
+    """
+    Webhook endpoint to receive attack alerts from edge devices.
+
+    This route accepts JSON payloads from remote scripts and appends them to 
+    an in-memory dictionary `ALARMAS_ACTIVAS`, keyed by the device's IP address.
+
+    :return: A JSON response acknowledging the receipt of the alarm.
+    :rtype: Tuple[Response, int]
+    """
     data = request.json
     device_ip = data.get("device_ip", request.remote_addr)
     
@@ -102,13 +132,30 @@ def receive_alarm():
     ALARMAS_ACTIVAS[device_ip].append(data)
     return jsonify({"status": "ok"}), 200
 
+
 @deteccion_bp.route("/api/poll_alarms/<device_ip>", methods=["GET"])
 def poll_alarms(device_ip):
+    """
+    Retrieve and clear pending alarms for a specific device.
+
+    :param device_ip: The IP address of the device being queried.
+    :type device_ip: str
+    :return: A JSON response containing a list of active alarms.
+    :rtype: Response
+    """
     alarmas = ALARMAS_ACTIVAS.pop(device_ip, [])
     return jsonify({"alarms": alarmas})
 
+
 @deteccion_bp.route("/deteccion/start", methods=["POST"])
 def start_detection():
+    """
+    Remotely execute the network detection script on the edge device.
+
+    :return: A JSON response indicating if the detection process was successfully 
+             started.
+    :rtype: Tuple[Response, int]
+    """
     data = request.json
     device_ip = data.get("device_ip")
     model_id = data.get("model_id")
@@ -174,8 +221,15 @@ def start_detection():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @deteccion_bp.route("/deteccion/stop", methods=["POST"])
 def stop_detection():
+    """
+    Terminate the remote detection process and aggregate the results.
+
+    :return: A JSON response containing the aggregated traffic statistics.
+    :rtype: Tuple[Response, int]
+    """
     data = request.json
     device_ip = data.get("device_ip")
     device_user = data.get("device_user", "root")

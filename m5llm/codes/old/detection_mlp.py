@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from pathlib import Path
 import time
 import sys
@@ -39,6 +38,7 @@ except FileNotFoundError as e:
 except Exception as e:
     print(f"[ERROR] Error al inicializar el entorno: {e}")
     sys.exit(1)
+
 
 # =============== #
 # =  FUNCTIONS  = #

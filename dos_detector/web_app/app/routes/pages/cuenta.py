@@ -3,10 +3,26 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.security import generate_password_hash
 from ...models import db, User, Modelo, Dispositivo
 
+
 cuenta_bp = Blueprint("cuenta", __name__)
+
 
 @cuenta_bp.route("/cuenta", methods=["GET", "POST"])
 def index():
+    """
+    Manage the user profile and account settings.
+
+    On a GET request: retrieves the current user's profile data and 
+    renders the account page. Guest users are redirected away.
+    
+    On a POST request: processes form submissions to update the user's 
+    username and/or password. It performs validation.
+
+    :return: A rendered HTML template displaying the account dashboard 
+             on a GET request, or a redirect response after processing 
+             a POST request or if access is denied.
+    :rtype: str | Response
+    """
     if session.get('guest'):
         flash("La página de cuenta solo está disponible para usuarios registrados.", "neutral")
         return redirect(url_for('dashboard.dashboard'))
@@ -52,8 +68,16 @@ def index():
                            num_modelos=num_modelos, 
                            num_dispositivos=num_dispositivos)
 
+
 @cuenta_bp.route("/cuenta/delete", methods=["POST"])
 def delete_account():
+    """
+    Permanently delete the current user's account and all associated data.
+
+    :return: A redirect response to the main index page upon successful deletion, 
+             or a redirect back to the account page if an error occurs.
+    :rtype: Response
+    """
     if session.get('guest'):
         return redirect(url_for('main.index'))
 

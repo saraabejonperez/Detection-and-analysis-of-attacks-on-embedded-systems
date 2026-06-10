@@ -8,10 +8,23 @@ from flask import Blueprint, render_template, request, flash, session, current_a
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from ...models import db, Modelo
 
+
 evaluacion_bp = Blueprint("evaluacion", __name__)
+
 
 @evaluacion_bp.route("/evaluacion", methods=["GET", "POST"])
 def index():
+    """
+    Evaluate a selected machine learning model using a standard test dataset.
+    
+    On a GET request: display the evaluation interface.
+    On a POST request: identify the selected model, perform inference 
+    on a pre-configured test dataset on the server, and return the statistics to the template.
+
+    :return: The rendered HTML template displaying the model selection form 
+             and, if a valid POST request was processed, the evaluation metrics.
+    :rtype: str
+    """
     if session.get('guest'):
         modelos = session.get('guest_models', [])
     else:

@@ -2,7 +2,20 @@ import os
 from flask import Flask
 from .models import db
 
-def create_app():
+def create_app() -> Flask:
+    """
+    Create and configure an instance of the Flask application.
+
+    This function acts as the application factory. It initializes the Flask app, 
+    sets a cryptographically secure secret key for session management, and 
+    configures the SQLAlchemy database connection. 
+    It also initializes the database extension, creates all database tables 
+    within the application context if they do not already exist, and registers 
+    all the necessary routing blueprints for the different modules of the application.
+
+    :return: The fully configured Flask application instance.
+    :rtype: Flask
+    """
     app = Flask(__name__)
     
     app.secret_key = os.urandom(24)

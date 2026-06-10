@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 from nfstream import NFStreamer
 
+
 # ================ #
 # =  PARAMETERS  = #
 # ================ #
@@ -34,6 +35,7 @@ with open(args.results, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["timestamp", "src_ip", "dst_ip", "score", "label", "latency"])
 
+
 # =============== #
 # =  FUNCTIONS  = #
 # =============== #
@@ -52,7 +54,8 @@ def preprocess_flow(flow) -> pd.DataFrame:
     values = [getattr(flow, feature, 0) for feature in FEATURES]
     return pd.DataFrame([values], columns=FEATURES)
 
-def classify_flow(flow):
+
+def classify_flow(flow) -> None:
     """
     Perform inference on a single network flow and print the classification result.
     Uses the Random Forest model loaded via joblib.
@@ -87,7 +90,8 @@ def classify_flow(flow):
     except Exception as e:
         logging.error(f"Error al clasificar flujo: {e}")
 
-def main():
+
+def main() -> None:
     """
     Execute the real-time DoS detection pipeline on live network traffic.
 

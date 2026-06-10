@@ -5,24 +5,60 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug.utils import secure_filename
 from ...models import db, Modelo, File
 
+
 modelos_bp = Blueprint("modelos", __name__)
 
+
 class ModeloInvitado:
+    """
+    A lightweight data structure to represent a machine learning model for guest users.
+    """
     def __init__(self, nombre, fecha_subida):
+        """
+        Initialize a new guest model instance.
+
+        :param nombre: The filename of the uploaded model.
+        :type nombre: str
+        :param fecha_subida: A string representation of the upload timestamp.
+        :type fecha_subida: str
+        """
         self.nombre = nombre
         self.fecha_subida = datetime.strptime(fecha_subida, '%Y-%m-%d %H:%M:%S')
         self.fecha_ultimo_uso = self.fecha_subida
 
+
 def allowed_model_file(filename):
-    """Comprueba si el archivo del modelo tiene la extensión permitida (.pkl)"""
+    """
+    Check if the provided model filename has an allowed extension.
+
+    :param filename: The name of the file to check.
+    :type filename: str
+    :return: True if the file has a .pkl extension, False otherwise.
+    :rtype: bool
+    """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pkl'}
 
+
 def allowed_features_file(filename):
-    """Comprueba si el archivo de configuración tiene la extensión permitida (.npy)"""
+    """
+    Check if the provided configuration filename has an allowed extension.
+
+    :param filename: The name of the file to check.
+    :type filename: str
+    :return: True if the file has a .npy extension, False otherwise.
+    :rtype: bool
+    """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'npy'}
+
 
 @modelos_bp.route("/modelos", methods=["GET"])
 def index():
+    """
+    Render the model management dashboard.
+
+    :return: The rendered HTML template displaying the list of models.
+    :rtype: str | Response
+    """
     if session.get('guest'):
         datos_invitado = session.get('guest_models', [])
         modelos = [ModeloInvitado(m['nombre'], m['fecha_subida']) for m in datos_invitado]
@@ -34,8 +70,15 @@ def index():
     
     return render_template("modelos.html", modelos=modelos)
 
+
 @modelos_bp.route("/modelos/upload", methods=["POST"])
 def upload():
+    """
+    Handle the simultaneous upload of a machine learning model and its features file.
+
+    :return: A redirect response back to the previous page or the models index.
+    :rtype: Response
+    """
     next_page = request.form.get('next', 'modelos.index')
 
     if 'archivo_modelo' not in request.files or 'archivo_features' not in request.files:
@@ -97,8 +140,17 @@ def upload():
     flash("Modelo y configuración subidos correctamente.", "success")
     return redirect(url_for("modelos.index"))
 
+
 @modelos_bp.route("/modelos/delete/<int:model_id>", methods=["POST"])
 def delete(model_id):
+    """
+    Delete a specific machine learning model and its configuration file.
+
+    :param model_id: The unique identifier (database ID or session list index) of the model.
+    :type model_id: int
+    :return: A redirect response back to the models index.
+    :rtype: Response
+    """
     if session.get('guest'):
         guest_models = session.get('guest_models', [])
         if 0 <= model_id < len(guest_models):

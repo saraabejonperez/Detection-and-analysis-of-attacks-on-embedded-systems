@@ -7,12 +7,14 @@ import sys
 import joblib
 from nfstream import NFStreamer
 
+
 # =========== #
 # =  PATHS  = #
 # =========== #
 BASE_PATH = Path("/home/Detection_M5LLM")
 MODEL_PATH = BASE_PATH / "dos_classifier_rf.pkl" 
 FEATURES_PATH = BASE_PATH / "features.npy"
+
 
 # ================ #
 # =  PARAMETERS  = #

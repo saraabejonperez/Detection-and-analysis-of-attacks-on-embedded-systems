@@ -4,10 +4,23 @@ from flask import Blueprint, render_template, session, flash
 import pytz
 from ...models import db, Modelo, Dispositivo
 
+
 dashboard_bp = Blueprint("dashboard", __name__)
+
 
 @dashboard_bp.route("/")
 def dashboard():
+    """
+    Render the main dashboard and perform automatic data pruning for registered users.
+
+    If the current session belongs to a logged-in user,
+    a maintenance routine is activated. If any cleanup occurs,
+    the changes are committed to the database and a warning message is generated
+    to notify the user about the automatic maintenance.
+
+    :return: The rendered HTML template for the dashboard.
+    :rtype: str
+    """
     is_guest = session.get('guest', False)
     username = session.get('username', 'Invitado')
     

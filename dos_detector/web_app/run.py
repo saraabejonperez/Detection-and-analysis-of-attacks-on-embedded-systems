@@ -7,7 +7,9 @@ app = create_app()
 
 @app.cli.command("init-admin")
 def init_admin():
-    """Crea un usuario administrador inicial desde la terminal"""
+    """
+    Create an administrator user from the command line interface.
+    """
 
     print("CREADOR DE USUARIOS ADMINISTRADORES")
     print(f'-'*35)
