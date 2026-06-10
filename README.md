@@ -52,6 +52,17 @@ La plataforma web del proyecto está desarrollada para ser desplegada mediante c
 
 3. Accede a la aplicación web a través del navegador web navegando a **http://{ip_ordenador}:5000**. 
 
+### Credenciales
+Para acceder al sistema se deben usar estas credenciales:  
+
+**Usuario común:**
+- nombre de usuario: *user*
+- contraseña: *user_tfg_2026*
+
+**Usuario administrador:**
+- nombre de usuario: *admin*
+- contraseña: *admin_tfg_2026*
+
 ### Autor
 Este proyecto fue desarrollado por Sara Abejón Pérez como parte del Trabajo de Fin de Grado en la Universidad de Burgos.
 
